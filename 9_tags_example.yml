@@ -1,0 +1,16 @@
+---
+- name: Playbook using tags to install httpd and start service
+  hosts: localhost
+
+  tasks:
+    - name: Instaling httpd
+      yum:
+        name: httpd
+        state: present
+      tags: i-httpd
+
+    - name: Start httpd service
+      service:
+        name: httpd
+        state: started
+      tags: s-httpd
