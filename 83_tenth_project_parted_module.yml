@@ -1,0 +1,50 @@
+- name: Create partition with GPT
+  parted:
+    device: /dev/sdc
+    number: 1
+    fs_type: ext2
+    label: gpt
+    part_start: 0%
+    part_end: 100%
+    state: present
+
+- name: Format device as LUKS encrypted volume
+  luks_device:
+    name: "{{crypt_name}}"
+    device: /dev/sdc
+    state: present
+    passphrase: "{{passphrase}}"
+
+- name: Add additional passphrase to LUKS encrypted volume
+  luks_device:
+    name: "{{crypt_name}}"
+    device: /dev/sdc
+    state: present
+    passphrase: "{{passphrase}}"
+    new_passphrase: "{{new_passphrase}}"
+
+- name: Open LUKS encrypted volume
+  luks_device:
+    name: "{{crypt_name}}"
+    device: /dev/sdc
+    state: opened
+    passphrase: "{{passphrase}}"
+
+- name: Mount mapped crypto device
+  mount:
+    path: "{{crypt_mount}}"
+    src: "{{crypt_dev}}"
+    fstype: xfs
+    state: mounted
+
+- name: List system files to copy
+  find:
+    path: /var/tmp/log/
+    patterns: "systems*"
+    register: systems_logs
+
+- name: Copy System files
+  copy:
+    src: "{{item.path}}"
+    dest: /var/log/
+    remote_src: yes
