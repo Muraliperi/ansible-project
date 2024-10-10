@@ -1,0 +1,4 @@
+    - name: Create a virtual environment
+      command: python3 -m venv /opt/my_flask_app/venv
+      args:
+        creates: /opt/my_flask_app/venv
