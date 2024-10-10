@@ -70,3 +70,28 @@
       retries: 2
       delay: 1
       until: "uri_output.status == 200"
+
+---
+- name: Check intranet web server connection
+  hosts: localhost
+  become: no
+  tasks:
+    - name: connect to intranet web server
+      uri:
+        url: http://127.0.0.1:5000/
+        return_content: yes
+        status_code: 200
+---
+- hosts: localhost
+  become: no
+  tasks:
+    - name: Check the connectivity of Web Server
+      uri:
+        url: "{{ url }}"
+        return_content: yes
+        status_code: 200
+      register: result
+
+    - name: Displays the debug messages
+      debug:
+        msg: "{{ result.content }}"
