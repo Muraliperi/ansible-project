@@ -6,3 +6,11 @@
     - include_vars: webserver_package_name_for_{{ansible_distribution}}.yml
     - debug:
         msg: "Package name for {{ansible_distribution}} is: {{pkg_name}}"
+
+[tom@ansible-control-node advanced_1]$ cat webserver_package_name_for_CentOS.yml
+---
+ pkg_name: apache2
+[tom@ansible-control-node advanced_1]$ cat webserver_package_name_for_Rocky.yml
+---
+ pkg_name: httpd
+[tom@ansible-control-node advanced_1]$
