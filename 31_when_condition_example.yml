@@ -198,5 +198,13 @@
         name: httpd
         state: restarted
       when: result.rc == 0
+      
+   - name: List out /home
+      command: "ls /home"
+      register: home_out
 
+    - name: Fail with message
+      fail:
+        msg: "Failed because rc is 0"
+      when: home_out.rc == 0
     
