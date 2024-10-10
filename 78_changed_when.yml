@@ -1,0 +1,30 @@
+---
+- name: Plays to understand failed_when condition
+  hosts: localhost
+
+  tasks:
+    - name: Creating a file
+      file:
+        path: /tmp/ansible_file.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy the file to /tmp/dest directory
+      copy:
+        src: /tmp/ansible_file.txt
+        dest: /tmp/dest/
+
+    - name: Executing script to check httpd.service status
+      shell: /tmp/test.sh
+      register: script_output
+      changed_when: "'Successfully' in script_output.stdout"
+      notify:
+        - restart_chrony_service
+
+  handlers:
+    - name: restart_chrony_service
+      service:
+        name: chronyd
+        state: restarted
