@@ -10,3 +10,14 @@
         mode: 0755
         owner: testuser
         group: testuser
+
+---
+- name: Update SeLinuxType for the file
+  hosts: localhost
+  tasks:
+    - name: Update selinuxtype
+      file:
+        path: /tmp/ansible_file.txt
+        setype: samba_share_t
+        
+       # validate the file setype with "ls -lrtZ /tmp/ansible_file.txt" command.
