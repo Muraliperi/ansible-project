@@ -23,7 +23,7 @@
       service:
         name: sshd
         state: restarted
-
+---
 - name: Search a string in a file
   hosts: localhost
   vars:
@@ -39,3 +39,19 @@
       check_mode: true
       register: conf
       failed_when: (conf is failed) or (conf is changed)
+---
+- name: Commenting a line in the file
+  hosts: localhost
+  vars:
+    mypath: /etc/postfix/main.cf
+    my_regex: '(^daemon_directory .*)'
+
+  tasks:
+    - name: Commentout a line
+      ansible.builtin.lineinfile:
+        path: "{{ mypath }}"
+        regexp: "{{ my_regex }}"
+        line: '# \1'
+        backrefs: yes
+        state: present
+        backup: yes
