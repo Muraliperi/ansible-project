@@ -14,3 +14,14 @@
         day: "*"
         weekday: "*"
         job: 'logger "ansible-node-test-cron-messagie"'
+        
+    - name: Adding cronjob for root user
+      ansible.builtin.cron:
+        name: "Fetch system information"
+        state: present
+        minute: "*/2"
+        hour: "*"
+        month: "*"
+        day: "*"
+        weekday: "*"
+        job: "/tmp/scripts/system_info.sh &> /tmp/log/$(hostname)_system_info.log"
