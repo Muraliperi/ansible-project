@@ -1,0 +1,19 @@
+---
+- name: Validate file extensions
+  hosts: all
+  vars:
+    my_dicts: [
+      { file_name: 'data1.csv'}
+      { file_name: 'report.txt'}
+      { file_name: 'summary.json'}
+    ]
+
+  tasks:
+    - name: Check file extensions
+      ansible.builtin.assert:
+        that: item is match('.*\.(csv|txt)$')
+        fail_msg: "File with invalid extension detected: {{ item }}"
+        success_msg: "Valid file extension for file: {{ item }}"
+      loop: "{{ my_dicts | map(attribute='file_name') | list }}"
+      loop_control:
+        label: "{{ item }}"
