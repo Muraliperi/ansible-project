@@ -24,7 +24,7 @@
       register: bash_out
 
     - set_fact:
-        bash_version: "{{ bash_out.stdout.split('\n')[0].split(' ')[3] }}"
+        bash_version: "{{ bash_out.stdout.split('\n')[0].split(' ')[3] }}"  # Creating "bash_version" variable using set_fact which can be used in jinja template.
 
     - name: Write /root/abc.txt file when sdb drive available
       template:
