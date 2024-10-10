@@ -32,3 +32,27 @@
         name: httpd
         state: restarted
       when: result.rc == 0
+
+---
+- name: Validation for file existance
+  hosts: localhost
+  become: true
+
+  vars:
+     myfile: /tmp/validate.txt
+
+  tasks:
+    - name: Check if file exists
+      ansible.builtin.stat:
+        path: "{{ myfile }}"
+      register: file_data
+
+    - name: Print if file exists
+      ansible.builtin.debug:
+        msg: "{{ myfile }} file is exists"
+      when: file_data.stat.exists
+
+    - name: Print if file doesn't exists
+      ansible.builtin.debug:
+        msg: "{{ myfile }} file doesn't exist"
+      when: not file_data.stat.exists
