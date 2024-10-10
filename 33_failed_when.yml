@@ -13,3 +13,10 @@
       command: cat /var/log/server.log
       register: command_output
       failed_when: "'ERROR' in command_output.stdout"
+
+    - name: Install apache2 package
+      yum:
+        name: httpd
+        state: present
+      register: result
+      failed_when: "'No package matching' in result.msg"
