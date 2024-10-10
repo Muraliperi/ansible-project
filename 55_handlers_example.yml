@@ -45,3 +45,26 @@
     - name: reboot host
       ansible.builtin.reboot:
       listen: relabel and reboot
+
+---
+- name: Start and reload the firewall
+  hosts: localhost
+  tasks:
+    - name: Enable http port in firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+      notify:
+        - Reload firewalld
+
+    - name: Start httpd
+      service:
+        name: httpd
+        state: started
+
+  handlers:
+    - name: Reload firewalld
+      firewalld:
+        service: httpd
+        state: reloaded
