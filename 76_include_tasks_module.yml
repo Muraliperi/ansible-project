@@ -6,3 +6,17 @@
   tasks:
     - include_tasks: install_httpd_on_{{ansible_distribution}}.yml
     - include_tasks: install_java_on_{{ansible_distribution}}.yml
+    
+[tom@ansible-control-node advanced_1]$ cat install_httpd_on_Rocky.yml
+---
+ - name: Install wget on Rocky Family
+   yum:
+     name: httpd
+     state: present
+[tom@ansible-control-node advanced_1]$ cat install_httpd_on_CentOS.yml
+---
+ - name: Install webserver on CentOS Family
+   yum:
+     name: httpd
+     state: present
+[tom@ansible-control-node advanced_1]$
