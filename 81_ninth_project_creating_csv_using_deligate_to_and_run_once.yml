@@ -1,0 +1,32 @@
+---
+- name: Generate .csv file for discovery info
+  hosts: linux
+
+  tasks:
+    - name: Fetching uptime of the server
+      shell: "uptime"
+      register: up_time
+
+    - name: Printing discovery info of servers
+      debug:
+        msg: "{{inventory_hostname}},{{ansible_os_family}},{{ansible_system}},{{ansible_distribution}},{{ansible_distribution_version}},{{up_time.stdout.split(',')[0].split(' ')[-1]}}"
+
+    - name: Deleting existing .Discovery file
+      file:
+        path: /etc/ansible/playbooks/advanced_1/Disovery.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Creating .Discovery file
+      copy:
+        dest: ./Discovery.csv
+        content: "hostname,os_family,system_type,distribution_name,distribution_version,uptime"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Updating discover info in .csv file
+      lineinfile:
+        path: ./Discovery.csv
+        line: "{{inventory_hostname}},{{ansible_os_family}},{{ansible_system}},{{ansible_distribution}},{{ansible_distribution_version}},{{up_time.stdout.split(',')[0].split(' ')[-1]}}"
+      delegate_to: localhost
