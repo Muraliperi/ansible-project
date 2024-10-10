@@ -37,3 +37,16 @@
           - copy_result is succeeded
         fail_msg: "The configuration file copy is failed. Please check the source and destination paths."
         success_msg: "The configuration file copy is succeeded. Please check the source and destination paths."
+---
+- hosts: localhost
+  vars:
+    my_val1: 900
+    my_val2: 200
+  tasks:
+    - name: Validate multiple conditions
+      assert:
+        that:
+          - my_val1 >= 100
+          - my_val2 <= 200
+        fail_msg: "'my_val1' must be between 0 to 100"
+        success_msg: "'my_val2' must be between 0 to 200"
