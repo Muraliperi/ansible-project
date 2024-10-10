@@ -1,0 +1,8 @@
+---
+- name: Install web application and database
+  hosts: centosstream7
+  tasks:
+    - name: Download MySQL community release RPM
+      get_url:
+        url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+        dest: /tmp/mysql-community-release-el7-5.noarch.rpm
