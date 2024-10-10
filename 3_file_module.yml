@@ -10,6 +10,12 @@
         mode: 0755
         owner: testuser
         group: testuser
+        
+    - name: Creating symbolic link
+      ansible.builtin.file:
+        src: "{{ my_source }}"
+        dest: "{{ mysym_link_path }}"
+        state: link
 
 ---
 - name: Update SeLinuxType for the file
