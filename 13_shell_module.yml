@@ -1,0 +1,7 @@
+---
+- name: Set password expiration to 99999 days
+  hosts: all
+  become: yes
+  tasks:
+    - name: Set password expiration to 99999 days for root user
+      shell: "chage -M 99999 root"
