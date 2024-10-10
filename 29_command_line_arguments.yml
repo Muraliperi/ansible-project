@@ -1,0 +1,14 @@
+---
+- name: Install and uninstall pkgs
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Install {{ pkg }} package
+      yum:
+        name: "{{ pkg }}"
+        state: "{{ pkg_state }}"
+
+    # command line arguments
+    # ansible-playbook install_uninstall_pkgs.yml -e "{'pkg':'httpd', 'pkg_state':'present'}"
+    # ansible-playbook install_uninstall_pkgs.yml -e "pkg=httpd pkg_state=present"
