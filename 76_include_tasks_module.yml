@@ -1,0 +1,8 @@
+---
+- name: Simple play to install multi packages
+  hosts: linux
+  become: True
+
+  tasks:
+    - include_tasks: install_httpd_on_{{ansible_distribution}}.yml
+    - include_tasks: install_java_on_{{ansible_distribution}}.yml
