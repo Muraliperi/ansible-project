@@ -84,3 +84,29 @@
         regexp: "html_directory = yes"
         state: absent
         backup: yes
+
+
+---
+- name: Commenting a line in the file
+  hosts: localhost
+  vars:
+    mypath: /etc/postfix/main.cf
+    from_line: "html_directory = no"
+    to_line: "html_directory = yes"
+
+  tasks:
+    - name: Commentout a line
+      ansible.builtin.lineinfile:
+        path: "{{ mypath }}"
+        # The string to search
+        regexp: "{{ from_line }}"
+        # The string to replace with
+        line: "{{ to_line }}"
+        state: present
+        backup: yes
+
+    - name: replace line which starts with bind-address
+      lineinfile:
+        dest: /etc/mysql/my.cnf
+        regexp: ^bind-address
+        line: "bind-address = 0.0.0.0"
