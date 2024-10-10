@@ -82,7 +82,7 @@
            state: started
          ignore_errors: True
 
-      when: ansible_distribution == "CentOS"
+      when: "'web' in group_names"
 
     - block:
        - name: Install chrony on Rocky distribution
