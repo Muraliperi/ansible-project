@@ -1,0 +1,25 @@
+---
+- name: printing multi lines using operators
+  hosts: localhost
+
+  vars:
+    variable1: |-
+        A paragraph is a self-contained unit of discourse
+        in writing dealing with a particular point or idea.
+        Though not required by the orthographic conventions
+        of any language with a writing system, paragram
+    variable2: >-
+
+        A paragraph is a self-contained unit of discourse
+        in writing dealing with a particular point or idea.
+        Though not required by the orthographic conventions
+        of any language with a writing system, paragram
+
+  tasks:
+    - name: Printing var1 message
+      ansible.builtin.debug:
+        msg: "{{ variable1.split('\n') }}"
+
+    - name: Printing var2 message
+      ansible.builtin.debug:
+        var: variable2
