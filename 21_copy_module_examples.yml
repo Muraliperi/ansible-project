@@ -57,3 +57,16 @@
         mode: '0644'
       with_fileglob:
         - "/tmp/sourcedir/*.json"
+    - name: List system files to copy
+      find:
+        path: /var/tmp/log/
+        patterns: "systems*"
+        register: systems_logs
+
+    - name: Copy System files
+      copy:
+        src: "{{item.path}}"
+        dest: /var/log/
+        remote_src: yes
+
+
