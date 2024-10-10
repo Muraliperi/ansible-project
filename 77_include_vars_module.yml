@@ -1,0 +1,8 @@
+---
+- name: Simple playbook to fetch variable from another playbook
+  hosts: linux
+
+  tasks:
+    - include_vars: webserver_package_name_for_{{ansible_distribution}}.yml
+    - debug:
+        msg: "Package name for {{ansible_distribution}} is: {{pkg_name}}"
