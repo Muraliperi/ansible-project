@@ -110,3 +110,29 @@
         dest: /etc/mysql/my.cnf
         regexp: ^bind-address
         line: "bind-address = 0.0.0.0"
+
+---
+- name: Adding tom user in sudoers
+  hosts: rockylinux9, centosstream7
+  vars:
+    lines: "tom         ALL=(ALL)       NOPASSWD: ALL"
+    passwd: "$*************encrypted_password_from_/etc/shadow_file********************"
+  tasks:
+    - name: Creating a group
+      group:
+        name: ansgrp
+        state: present
+
+    - name: Creating tom user
+      user:
+        name: tom
+        group: ansgrp
+        password: "{{ passwd }}"
+        state: present
+        comment: Ansible practice user
+
+    - name: Updating sudoers file
+      lineinfile:
+        line: "{{ lines }}"
+        path: /etc/sudoers
+        state: present
