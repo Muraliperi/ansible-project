@@ -1,0 +1,29 @@
+---
+- name: Renaming the directory
+  hosts: localhost
+  vars:
+    mysrc: /root/foo/
+    mydst: /root/bar
+
+  tasks:
+    - name: Validating if source path status
+      ansible.builtin.stat:
+        path: "{{ mysrc }}"
+      register: src_status
+
+    - name: Printing debug
+      ansible.builtin.debug:
+        var: src_status
+
+    - name: Directory renaming from {{ mysrc }} to {{ mydst }}
+      ansible.builtin.copy:
+        remote_src: true
+        src: "{{ mysrc }}"
+        dest: "{{ mydst }}"
+      when: src_status.stat.exists
+
+    - name: Remove old directory {{ mysrc }}
+      ansible.builtin.file:
+        path: "{{ mysrc }}"
+        state: absent
+      when: src_status.stat.exists
