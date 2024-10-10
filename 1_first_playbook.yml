@@ -1,0 +1,9 @@
+---
+   - name: sample playbook
+     hosts: localhost
+     become: true
+     become_user: root
+
+     tasks:
+       - name: Checking ping availability
+         ping:
