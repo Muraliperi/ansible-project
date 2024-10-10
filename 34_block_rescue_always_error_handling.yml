@@ -1,0 +1,26 @@
+---
+- name: Block and rescue error handling
+  hosts: localhost
+  gather_facts: False
+  vars:
+    ansdir: /tmp/ansdirs
+
+  tasks:
+    - block:
+        - name: Find path {{ansdir}}
+          command: "ls {{ansdir}}"
+          register: ansdir_out
+
+        - name: Printing contents of {{ansdir}}
+          debug:
+            msg: "The {{ansdir}} contains {{ansdir_out.stdout.split('\n')}}"
+      rescue:
+        - name: printint debug msg
+          debug:
+            msg: "The {{ansdir}} is not a valid path"
+
+      always:
+        - name: This task will always get executed
+          debug:
+            msg: "This task will be executed always"
+      # This is similar to try, exept and finally in python. Remembered try and except ?
