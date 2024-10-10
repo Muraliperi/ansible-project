@@ -2,6 +2,15 @@
 - name: Guided practice
   hosts: centosstream7, rockylinux9
   tasks:
+    - name: Updating entry in a file using blocklinfile module
+      ansible.builtin.blockinfile:
+         path: /etc/hosts
+         state: present
+         content: |
+                 192.168.0.2 demo demo.example.com
+                 192.168.0.3 demo2 demo2.example.com
+                 192.168.0.4 demo3 demo3.example.com
+                 
     - name: Adding multiline to /tmp/testloop.yml file
       blockinfile:
         path: /tmp/testloop.yml
