@@ -10,3 +10,20 @@
         group: root
         mode: '0755'
         setype: samba_share_t
+        
+    - name: Copying a file from /tmp directory
+      become: true
+      copy:
+        src: /tmp/testfile.txt
+        dest: /tmp
+        owner: testuser
+        group: testuser
+        mode: 0644
+        backup: yes
+
+   - name: Take existing auditd.conf file
+      copy:
+          src: /etc/audit/auditd.conf
+          dest: /etc/audit/auditd.conf_{{ansible_date_time.date}}.bkp
+          backup: yes
+          remote_src: yes
