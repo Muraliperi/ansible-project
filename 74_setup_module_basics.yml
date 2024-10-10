@@ -1,0 +1,16 @@
+---
+- name: Fetching setup module vars dictionaries and lists
+  hosts: localhost
+
+  tasks:
+    - name: Fetch setup module
+      setup:
+      register: setup_output
+
+    - name: Fetching openssh version
+      shell: "rpm -q openssh"
+      register: openssh_ver
+
+    - name: Printing setup output
+      debug:
+        msg: "{{setup_output.ansible_facts['ansible_hostname']}} - {{openssh_ver.stdout}}"
