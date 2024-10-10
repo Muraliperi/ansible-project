@@ -1,0 +1,79 @@
+---
+- name: Guided practice
+  hosts: centosstream7, rockylinux9
+  tasks:
+    - name: Copy /var/log/messages files from remote hosts
+      fetch:
+        src: /var/log/messages
+        dest: /etc/ansible/playbooks/secure-data/
+        validate_checksum: false
+
+    - name: Copy the file to remote servers and update selinux context
+      copy:
+        src: /etc/ansible/playbooks/testloop.yml
+        dest: /tmp/
+        owner: root
+        group: root
+        mode: '0755'
+        setype: samba_share_t
+
+    - name: Fetch file property. ex testloop.yml
+      command: ls -lrtZ /tmp/testloop.yml
+      register: result
+
+    - name: Display the file property
+      debug:
+        var: "{{ result.stdout }}"
+
+    - name: Set the SELinux Context to it's default Values
+      file:
+        path: /tmp/testloop.yml
+        seuser: _default
+        serole: _default
+        setype: user_home_t
+        selevel: _default
+      register: file_data
+
+    - name: Fetch file property. ex testloop.yml
+      command: ls -lrtZ /tmp/testloop.yml
+      register: file_data
+
+    - name: Display the file property
+      debug:
+        var: "{{ file_data.stdout }}"
+
+    - name: Add a line to /tmp/testloop.yml file
+      lineinfile:
+        path: /tmp/testloop.yml
+        line: 'This line added from Ansible playbook'
+        state: present
+
+    - name: Fetch file content
+      shell: "tail -10 /tmp/testloop.yml"
+      register: testloop_data
+
+    - name: Displays last 10 files from /tmp/testloop.yml after addding new line
+      debug:
+        msg: "{{ testloop_data.stdout.split('\n') }}"
+
+    - name: Adding multiline to /tmp/testloop.yml file
+      blockinfile:
+        path: /tmp/testloop.yml
+        block: |
+         This is a block of text
+         line 1
+         line 2
+         line 3
+         ..
+         ..
+         line n
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        state: present
+
+    - name: Fetch file content
+      shell: "tail -15 /tmp/testloop.yml"
+      register: testloop_out
+
+    - name: Displays last 15 files from /tmp/testloop.yml after addding new line
+      debug:
+        msg: "{{ testloop_out.stdout.split('\n') }}"
