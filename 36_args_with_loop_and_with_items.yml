@@ -1,0 +1,37 @@
+- name: Install packages
+  hosts: all
+  tasks:
+    - name: Install common packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - vim
+        - git
+        - curl
+      args:
+        update_cache: yes  # This will apply to all iterations
+
+    - name: Create users
+      user:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - alice
+        - bob
+        - charlie
+      args:
+        shell: /bin/bash  # Common argument for all users
+
+    - name: Copy multiple configuration files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: /tmp/file1.conf, dest: /etc/app/file1.conf }
+        - { src: /tmp/file2.conf, dest: /etc/app/file2.conf }
+      args:
+        owner: root
+        group: root
+        mode: '0644'  # Common permissions for all files
+
