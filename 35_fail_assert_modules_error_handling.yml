@@ -1,0 +1,39 @@
+---
+- name: Assignment7
+  hosts: centosstream7
+  tasks:
+    - name: Install apache2 package
+      yum:
+        name: httpd
+        state: present
+      register: result
+      failed_when: "'No package matching' in result.msg"
+
+    - name: Start apache2 service
+      service:
+        name: httpd
+        state: started
+      register: service_status
+      ignore_errors: true
+
+    - name: Copy httpd.conf file
+      copy:
+        src: /etc/httpd/conf/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf
+      register: copy_result
+
+    - name: Registering apache2 service status
+      command: /usr/bin/systemctl status httpd
+      register: httpd_status
+
+    - name: Fail with custom message if httpd service failed to start
+      fail:
+        msg: "Failed to start httpd service, check httpd service status and review logs"
+      when: service_status.failed
+
+    - name: Print successfull or failure message for httpd.conf file
+      assert:
+        that:
+          - copy_result is succeeded
+        fail_msg: "The configuration file copy is failed. Please check the source and destination paths."
+        success_msg: "The configuration file copy is succeeded. Please check the source and destination paths."
