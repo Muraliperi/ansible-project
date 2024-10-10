@@ -1,0 +1,19 @@
+[root@ansible-control-node playbooks]# cat ./templates/if_condition.j2
+{% if x > y %}
+x is greater than y
+{% endif %}
+[root@ansible-control-node playbooks]# cat ./templates/elif_condition.j2
+{% if x > y %}
+x is greater. The value of x is: {{x}}
+{% elif y > x %}
+y is greater. The value of y is: {{y}}
+{% else %}
+x and y values are equal. The value of x is: {{x}} The value of y is: {{y}}
+{% endif %}
+[root@ansible-control-node playbooks]# cat ./templates/else_if_condition.j2
+{% if x > y %}
+X is greater than Y
+{% else %}
+Y is greater than X
+{% endif %}
+[root@ansible-control-node playbooks]#
