@@ -1,0 +1,12 @@
+---
+- name: Reboot module delay
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Rebooting local machine
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible"
+        pre_reboot_delay: 5
+        post_reboot_delay: 5
+        test_command: "uptime"
