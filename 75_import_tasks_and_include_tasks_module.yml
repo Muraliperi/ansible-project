@@ -1,0 +1,17 @@
+---
+- name: Simple play to install multi packages
+  hosts: linux
+  become: True
+
+  tasks:
+    - import_tasks: install_httpd_on_CentOS.yml
+      when: ansible_distribution == "CentOS"
+
+    - import_tasks: install_httpd_on_RockyOS.yml
+      when: ansible_distribution == "Rocky"
+
+    - include_tasks: install_java_on_CentOS.yml
+      when: ansible_distribution == "CentOS"
+
+    - include_tasks: install_java_on_Rocky.yml
+      when: ansible_distribution == "Rocky"
