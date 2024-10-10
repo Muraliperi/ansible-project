@@ -1,0 +1,52 @@
+---
+- name: URI module demo
+  hosts: localhost
+  become: false
+  vars:
+    ser_url: "https://www.udemy.com"
+    endpoint: "/join/login-popup/"
+    uname: "muruganbcamba@gmail.com"
+    passw: "Move@123"
+  tasks:
+    - name: list users
+      ansible.builtin.uri:
+        url: "{{ ser_url }}{{ endpoint }}"
+        url_username: "{{ uname }}"
+        url_password: "{{ passw }}"
+        force_basic_auth: true
+        method: GET
+        validate_certs: no
+        return_content: true
+        status_code: [200, 202, 403]
+        timeout: 30
+      register: result
+
+    - name: Print error message
+      ansible.builtin.debug:
+       var: result.msg
+---
+- name: uri module for token based
+  hosts: localhost
+  become: false
+
+  vars:
+    servername: "https://reqres.in"
+    endpoint: "/api/login"
+
+  tasks:
+    - name: Login on req res
+      ansible.builtin.uri:
+        url: "{{ servername }}{{ endpoint }}"
+        method: POST
+        body_format: json
+        body: '{
+          "email": "eve.holt@reqres.in",
+          "password": "cityslicka"
+              }'
+        status_code: 200
+        timeout: 30
+      register: result
+
+    - name: Token
+      ansible.builtin.debug:
+        var: result.json.token
