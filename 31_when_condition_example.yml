@@ -236,5 +236,40 @@
     - name: ssh service restart
       service:
         name: sshd
-        state: restarted[
+        state: restarted
+---
+- name: Verify if epel-release is installed
+  shell: rpm -q epel-release
+  register: epel_installed
+  failed_when: false
+
+- name: Epel Repo installation
+  block:
+    - name: Package installation
+      shell: rpm -i --nodigest "{{ epel_repo_url }}"
+
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+  when: epel_installed.rc != 0
+
+---
+- name: check if epel-release is installed
+  command: "rpm -q --queryformat '%{VERSION}' epel-release"
+  register: epel_version
+  when: epel_installed.rc == 0
+
+- name: Gpel Repo installation
+  block:
+    - name: Package installation
+      shell: rpm -i --nodigest "{{ gpel_repo_url }}"
+
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+  when: epel_installed.rc == 0 and epel_version.stdout != '97.76.0.13'
     
