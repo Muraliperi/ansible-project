@@ -10,3 +10,9 @@
         home: /home/karthi
         comment: Kadhal Mannan
         shell: /bin/bash
+        
+    - name: Update "karthi" users password
+      user:
+        name: karthi
+        update_password: always
+        password: "{{ newpassword|password_hash('sha512') }}"
