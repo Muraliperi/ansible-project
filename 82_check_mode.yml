@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Task 1
+      shell: uname -a > /tmp/testfile1
+      check_mode: true
+
+    - name: Task 2
+      shell: uname -a > /tmp/testfile2
+      check_mode: false
