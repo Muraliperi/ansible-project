@@ -1,0 +1,30 @@
+---
+- name: Extract archived files using unarchive module
+  hosts: localhost
+  become: true
+  vars:
+    source_url: "https://releases.ansible.com/ansible/ansible-2.9.25.tar.gz"
+    dest_path: /tmp
+
+  tasks:
+    - name: Install gunzip package on remote host
+      ansible.builtin.yum:
+        name:
+          - unzip
+          - tar
+        state: present
+
+    - name: Download file from secured url
+      ansible.builtin.get_url:
+        url: "{{ source_url }}"
+        dest: "{{ dest_path }}"
+
+    - name: Unzip the tar.gz file
+      ansible.builtin.shell: gunzip /tmp/ansible-2.9.25.tar.gz
+
+    - name: Extract .tar file using unarchive
+      ansible.builtin.unarchive:
+        src: "{{ dest_path }}/ansible-2.9.25.tar"
+        dest: /tmp/test-bkp
+        remote_src: true
+        validate_certs: true
