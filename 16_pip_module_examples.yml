@@ -1,0 +1,17 @@
+---
+- name: Install web application and database
+  hosts: centosstream7
+  tasks:
+    - name: Upgrade pip
+      pip:
+        name: pip
+        state: latest
+
+    - name: Ensure flask and flask-mysql module installed
+      pip:
+        name:
+          - flask
+          - flask-mysql
+        extra_args: "--trusted-host files.pythonhosted.org --trusted-host pypi.org --trusted-host pypi.python.org"
+        state: present
+      ignore_errors: yes
