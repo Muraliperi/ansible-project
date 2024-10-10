@@ -35,3 +35,21 @@
         group: root
         mode: '0644'  # Common permissions for all files
 
+- name: Update configuration and notify handler
+  hosts: all
+  tasks:
+    - name: Update configuration file
+      template:
+        src: config.j2
+        dest: /etc/app/config.conf
+      notify: Restart app
+
+  handlers:
+    - name: Restart app
+      systemd:
+        name: my_app
+        state: restarted
+      args:
+        enabled: true  # Common argument for the handler
+
+
