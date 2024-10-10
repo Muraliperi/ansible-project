@@ -1,0 +1,10 @@
+---
+- name: Do a Basic install of httpd apache
+  hosts: LinuxClient2
+  roles:
+    - basicinstall
+
+- name: Do full install of apache
+  hosts: LinuxClient1
+  roles:
+    - fullinstall
