@@ -1,0 +1,37 @@
+---
+- name: Test operators
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+    x: 34
+    y: 576
+    my_name: "murali"
+    her_name: "GIRIJA"
+    my_file: "/etc/ansible/playbooks/advanced_1/operators_using_filters_and_methods.yml"
+    my_link_path: "/root/ansi_path"
+    my_hard_link: "/root/setup_module.yml"
+
+  tasks:
+    - name: Printing variables data
+      debug:
+        msg:
+         - "x value is: {{x is defined}}"
+         - "y value is: {{y is defined}}"
+         - "z is defined: {{z is defined}}"
+         - "z is undefined: {{z is undefined}}"
+         - "my_name is lower: {{my_name is lower}}"
+         - "her_name is upper: {{her_name is upper}}"
+         - "my_name is upper: {{my_name is upper}}"
+         - "her_name is string: {{her_name is string}}"
+         - "x is divisibleby 2: {{x is divisibleby 2}}"
+         - "x is odd: {{x is odd}}"
+         - "y is even: {{y is even}}"
+         - "x is number: {{x is number}}"
+         - "y is number: {{y is number}}"
+         - "x is string: {{x is string}}"
+         - "my_file is file: {{my_file is file}}"
+         - "my_file is directory: {{my_file is directory}}"
+         - "my_file is exist: {{my_file is exists}}"
+         - "my_link_path is a symbolic link file: {{my_link_path is link}}"
+           #- "my_hard_link is a hard link file: {{my_hard_link is hard}}"
