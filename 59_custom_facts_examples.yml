@@ -1,0 +1,38 @@
+
+[root@ansible-control-node advanced]# cat facts.d/application_versions.fact
+#!/usr/bin/bash
+ApacheVersion=$(httpd -version|awk '{print $3}'|head -1|cut -d '/' -f 2)
+GitVersion=$(git --version|awk '{print $3}')
+
+cat << EOF
+{ "apache_version": "$ApacheVersion",
+  "git_version": "$GitVersion"
+}
+EOF
+
+[root@ansible-control-node advanced]#
+
+[root@ansible-control-node advanced]# cat custom_ansible_facts.yml
+---
+- name: Copy module demo
+  hosts: linuxclient2
+  become: true
+
+  tasks:
+    - name: Create a directory for custom ansible facts
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        mode: '0755'
+
+    - name: Copying .fact file on remote hosts
+      copy:
+        src: /etc/ansible/playbooks/advanced/facts.d/application_versions.fact
+        dest: /etc/ansible/facts.d/application_versions.fact
+        owner: root
+        group: root
+        mode: '0755'
+        backup: yes
+[root@ansible-control-node advanced]#
+
+
