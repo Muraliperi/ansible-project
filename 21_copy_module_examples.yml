@@ -1,0 +1,12 @@
+---
+- name: Guided practice
+  hosts: centosstream7
+  tasks:
+    - name: Copy the file to remote servers and update selinux context
+      copy:
+        src: /etc/ansible/playbooks/testloop.yml
+        dest: /tmp/
+        owner: root
+        group: root
+        mode: '0755'
+        setype: samba_share_t
