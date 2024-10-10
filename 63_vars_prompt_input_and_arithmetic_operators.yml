@@ -23,3 +23,29 @@
          - "z value is: {{a|int +x + y|int}}"
          - "{{a}} - {{b}} value is: {{a|int - b|int}}"
          - "{{a}} + {{b}} value is: {{a|int + b|int}}"
+
+---
+- name: Input and Output variables
+  hosts: localhost
+  gather_facts: false
+  vars:
+    a: 5
+    b: 7
+
+  vars_prompt:
+    - name: c
+      prompt: "Enter c value"
+      private: False
+
+    - name: d
+      prompt: "Enter d value"
+      private: False
+
+  tasks:
+    - name: Printing a b c values
+      debug:
+        msg:
+          - "a value is {{a}}"
+          - "b value is {{b}}"
+          - "c value is {{c}}"
+          - "d value is {{d}}"
