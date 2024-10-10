@@ -3,6 +3,9 @@
   hosts: LinuxClient2
   roles:
     - basicinstall
+    - python_deps
+    - mysql_db
+    - flask_web
 
 - name: Do full install of apache
   hosts: LinuxClient1
