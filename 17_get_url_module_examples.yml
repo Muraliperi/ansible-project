@@ -6,6 +6,9 @@
       get_url:
         url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
         dest: /tmp/mysql-community-release-el7-5.noarch.rpm
+        owner: root
+        group: root
+        mode: 0775
         
     - name: Download the moview in the share folder
       get_url:
