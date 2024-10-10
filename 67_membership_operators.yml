@@ -1,0 +1,16 @@
+---
+- name: Working on Membership operator
+  hosts: localhost
+  gather_facts: False
+  vars:
+    x: [32, 45, 67, 23]
+    y: 45
+
+  tasks:
+    - name: Check if y in x
+      debug:
+        msg:
+         - "x value is {{x}} and y value is {{y}}"
+         - "y in x {{y in x}}"
+         - "10 is in x: {{10 in x}}"
+         - "10 is not in x: {{10 not in x}}"
