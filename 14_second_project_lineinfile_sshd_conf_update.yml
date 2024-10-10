@@ -1,0 +1,30 @@
+---
+- name: fetch pid
+  hosts: localhost
+  tasks:
+    - name: Check for duplicate values
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        create: false
+        regexp: (?i)^\s*LoginGraceTime\s+
+        state: absent
+      check_mode: true
+      changed_when: false
+      register: dupes
+
+    - name: Finding and removing dupliecate lines
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        create: false
+        regexp: (?i)^\s*LoginGraceTime\s+
+        state: absent
+      when: dupes.found is defined and dupes.found > 1
+
+    - name: Insert correct line to /etc/ssh/sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: (?i)^\s*LoginGraceTime\s+
+        line: LoginGraceTime 0
+        state: present
+        insertbefore: ^[#\s]*Match
+        validate: /usr/sbin/sshd -t -f %s
