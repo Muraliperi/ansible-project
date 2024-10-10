@@ -1,0 +1,35 @@
+---
+- name: Create and mount filesystem
+  hosts: all
+
+  tasks:
+    - name: Create Partition /dev/sd[x]
+      parted:
+        name: files
+        label: gpt
+        device: /dev/sdb
+        number: 1
+        part_start: 1MiB
+        part_end: 1GB
+        state: present
+
+    - name: Create a xfs filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/sdb1
+
+    - name: Create directory for filesystem
+      file:
+        path: /data
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+        recurse: yes
+
+    - name: Mounting a filesystem
+      mount:
+        src: /dev/sdb1
+        path: /data
+        fstype: xfs
+        state: mounted
