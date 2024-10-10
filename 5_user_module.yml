@@ -41,3 +41,15 @@
           group: development
         - name: ganesh
           group: test
+
+    - name: Create users
+      user:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - alice
+        - bob
+        - charlie
+      args:
+        shell: /bin/bash  # Common argument for all users
+
