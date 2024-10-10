@@ -1,0 +1,22 @@
+---
+- name: run python scripts
+  hosts: localhost
+  tasks:
+    - name: run test.py script
+      ansible.builtin.script:
+        executable: python3
+        cmd: scripts/test.py
+      register: test_python_output
+
+    - name: Print test python raw output
+      ansible.builtin.debug:
+        var: test_python_output
+        verbosity: 2
+
+    - name: convert output to JSON
+      ansible.builtin.set_fact:
+        test_out: "{{ test_python_output.stdout| from_json }}" # this will convert output into json format
+
+    - name: Print test output
+      ansible.builtin.debug:
+        var: test_out
