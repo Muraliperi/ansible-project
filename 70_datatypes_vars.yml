@@ -1,0 +1,19 @@
+---
+- name: Printint variables datatypes
+  hosts: localhost
+  vars:
+    x: 23
+    y: "Hellow"
+    z: 145.78
+    a: False
+    b: Hello
+
+  tasks:
+    - name: Printing datatypes for all variables
+      ansible.builtin.debug:
+        msg:
+         - "The value of x is: {{x}} and the datatype is {{x|type_debug}}"
+         - "The value of x is: {{y}} and the datatype is {{y|type_debug}}"
+         - "The value of x is: {{z}} and the datatype is {{z|type_debug}}"
+         - "The value of x is: {{a}} and the datatype is {{a|type_debug}}"
+         - "The value of x is: {{b}} and the datatype is {{b|type_debug}}"
