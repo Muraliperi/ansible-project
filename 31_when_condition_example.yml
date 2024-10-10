@@ -114,4 +114,24 @@
       ansible.builtin.debug:
         msg: "{{ uptime_output.stdout }}"
       when: ansible_distribution == "CentOS"
+---
+- name: Conditional statement
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+    x: 4
+    y: 78
+    z: [1, 4, 89, 100]
+
+  tasks:
+    - name: Check if x == y ?
+      debug:
+        msg: "{{x}} is equal to {{y}}"
+      when: x==y
+
+    - name: Check if x is in z
+      debug:
+        msg: "x is in z: {{x}} is in {{z}}"
+      when: x in z
 
