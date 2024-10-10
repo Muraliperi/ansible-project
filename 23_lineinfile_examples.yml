@@ -23,3 +23,19 @@
       service:
         name: sshd
         state: restarted
+
+- name: Search a string in a file
+  hosts: localhost
+  vars:
+    mypath: "/etc/ssh/sshd_config"
+    mystring: "PasswordAuthentication no"
+
+  tasks:
+    - name: Find {{ mystring }} in ssh config file
+      ansible.builtin.lineinfile:
+        path: "{{ mypath }}"
+        line: "{{ mystring }}"
+        state: present
+      check_mode: true
+      register: conf
+      failed_when: (conf is failed) or (conf is changed)
