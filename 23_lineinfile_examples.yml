@@ -7,3 +7,11 @@
         path: /tmp/testloop.yml
         line: 'This line added from Ansible playbook'
         state: present
+        
+     - name: Editing ssh config file and replacing PasswordAuthentication from "no" to "yes"
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        state: present
+        line: PasswordAuthentication yes
+        validate: 'sshd -t -f %s'
