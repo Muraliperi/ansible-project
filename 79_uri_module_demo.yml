@@ -50,3 +50,23 @@
     - name: Token
       ansible.builtin.debug:
         var: result.json.token
+
+---
+- hosts: localhost
+  vars:
+    resolv_value: "{{ lookup('file', '/etc/resolv.conf') }}"
+  tasks:
+    - name: Retry combined with a loop
+      uri:
+        url: "https://{{ item }}.ansible.com"
+        method: GET
+      register: uri_output
+      with_items:
+        - "galaxy"
+        - "docs"
+        - "forum"
+        - "xyz"
+        - "www"
+      retries: 2
+      delay: 1
+      until: "uri_output.status == 200"
