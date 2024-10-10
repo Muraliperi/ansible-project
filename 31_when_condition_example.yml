@@ -78,3 +78,40 @@
       ansible.builtin.debug:
         msg: "The {{ dir_name }} doesn't exist"
       when: dir_status.stat.isdir is not defined
+
+---
+- name: Checking contents of a directory
+  hosts: localhost
+  become: true
+  vars:
+    mydir: /root/backup
+
+  tasks:
+    - name: Checking contents of "{{ mydir }}"
+      ansible.builtin.shell: ls -l {{ mydir }}
+      register: backup_content
+
+    - name: Directory "{{ mydir }}" is empty
+      ansible.builtin.debug:
+        msg: "The {{ mydir }} is empty"
+      when: backup_content.stdout == "total 0"
+
+    - name: Directory "{{ mydir }}" contains below files and folders
+      ansible.builtin.debug:
+        msg: "{{ backup_content.stdout.split('\n') }}"
+      when: backup_content.stdout != "total 0"
+
+---
+- name: When condition demo
+  hosts: localhost
+
+  tasks:
+    - name: Fetching uptime details
+      ansible.builtin.shell: uptime
+      register: uptime_output
+
+    - name: Printing debug message
+      ansible.builtin.debug:
+        msg: "{{ uptime_output.stdout }}"
+      when: ansible_distribution == "CentOS"
+
