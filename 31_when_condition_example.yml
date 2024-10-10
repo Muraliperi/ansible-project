@@ -211,15 +211,25 @@
 - name: "Rocky Linux 9 - CVE-2024-6387: regreSSHion"
   hosts: all
   become: true
+  
   tasks:
+    - name: check if openssh is installed
+      shell: "rpm -q openssh"
+      register: openssh_installed
+      failed_when: false
+      
     - name: Upgrade openssh
       dnf:
         name:
           - openssh
           - openssh-clients
           - openssh-server
-        state: latest
-      when: ansible_facts.distribution_major_version is version('9', '=')
+        state: present
+      when: 
+        - ansible_facts.distribution_major_version is version('9', '=')
+        - "'web' in group_names"
+        - openssh_installed.rc != 0
+        
       notify:
         - ssh service restart
   handlers:
