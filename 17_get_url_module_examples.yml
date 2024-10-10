@@ -6,3 +6,10 @@
       get_url:
         url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
         dest: /tmp/mysql-community-release-el7-5.noarch.rpm
+        
+    - name: Download the moview in the share folder
+      get_url:
+         url: http://media.example.com/moview/mymovie.mkv
+         dest: /data/collection/movies
+      async: 3600       # The maximum time the task would expect to get completed. How long in seconds it will wait. Set to zero 0 for long running tasks which you can't predict the completion time, set the value for async to 0 to wait as long as it takes to complete the job. How long to run ?
+      poll: 30          # How many seconds interval it will poll and check the status of file download's. Set poll to zero 0 to skip the waiting for the task completion and move to the next tasks. How fequently to check
