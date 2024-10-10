@@ -56,3 +56,25 @@
       ansible.builtin.debug:
         msg: "{{ myfile }} file doesn't exist"
       when: not file_data.stat.exists
+      
+---
+- name: Validate directory status using stat module
+  hosts: localhost
+  vars:
+    dir_name: /tmp/muralip
+
+  tasks:
+    - name: Validate if {{ dir_name }} exist
+      ansible.builtin.stat:
+        path: "{{ dir_name }}"
+      register: dir_status
+
+    - name: The {{ dir_name }} is exists
+      ansible.builtin.debug:
+        msg: "The {{ dir_name }} does exists"
+      when: dir_status.stat.isdir is defined and dir_status.stat.isdir
+
+    - name: The {{ dir_name }} doesn't exists
+      ansible.builtin.debug:
+        msg: "The {{ dir_name }} doesn't exist"
+      when: dir_status.stat.isdir is not defined
