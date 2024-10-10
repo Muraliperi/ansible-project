@@ -11,6 +11,12 @@
         mode: '0755'
         setype: samba_share_t
         
+    - name: Create a file using copy module
+      ansible.builtin.copy:
+        dest: "{{ filename }}"
+        content: |
+           "This is not an empty file"
+        
     - name: Copying a file from /tmp directory
       become: true
       copy:
