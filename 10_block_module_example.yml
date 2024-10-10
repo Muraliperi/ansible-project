@@ -29,3 +29,73 @@
      - name: Printing /tmp directory contents
        debug:
          var: tmp_out.stdout_lines
+---
+- name: installing httpd on centos and rocky linux
+  hosts: linux
+  become: true
+
+  tasks:
+    - block:
+       - name: Install httpd on CentOS distribution
+         yum:
+           name: httpd
+           state: present
+         notify: start httpd
+      when: ansible_distribution == "CentOS"
+
+    - block:
+       - name: Install chrony on RedHat distribution
+         yum:
+           name: chrony
+           state: present
+         notify: start chronyd
+      when: ansible_distribution == "Rocky"
+
+  handlers:
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+      ignore_errors: True
+
+    - name: start chronyd
+      service:
+        name: chronyd
+        state: started
+      ignore_errors: True
+
+---
+- name: installing httpd on centos and rocky linux
+  hosts: linux
+  become: true
+
+  tasks:
+    - block:
+       - name: Install httpd on CentOS distribution
+         yum:
+           name: httpd
+           state: present
+
+       - name: start httpd
+         service:
+           name: httpd
+           state: started
+         ignore_errors: True
+
+      when: ansible_distribution == "CentOS"
+
+    - block:
+       - name: Install chrony on Rocky distribution
+         yum:
+           name: chrony
+           state: present
+
+       - name: start chronyd
+         service:
+           name: chronyd
+           state: started
+         ignore_errors: True
+
+      when: ansible_distribution == "Rocky"
+
+      
