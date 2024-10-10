@@ -13,3 +13,18 @@
          dest: /data/collection/movies
       async: 3600       # The maximum time the task would expect to get completed. How long in seconds it will wait. Set to zero 0 for long running tasks which you can't predict the completion time, set the value for async to 0 to wait as long as it takes to complete the job. How long to run ?
       poll: 30          # How many seconds interval it will poll and check the status of file download's. Set poll to zero 0 to skip the waiting for the task completion and move to the next tasks. How fequently to check
+
+    - name: Download ubuntu image
+      get_url:
+        url: http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/mini.iso
+        dest: /tmp/
+      async: 3600     # Maximum time in seconds for the task to run
+      poll: 0         # Don't wait for the task to complete
+      register: download_iso
+
+    - name: Wait for download to finish
+      async_status:
+        jid: "{{ download_iso.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30    # Specifies how many times to check the job status (in this case, 30 times).
