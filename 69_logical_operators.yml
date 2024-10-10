@@ -1,0 +1,20 @@
+---
+- name: Logical operators with AND
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+    x: 45
+    y: 34
+    z: [12, 65, 23, 90]
+    a: 34
+
+  tasks:
+    - name: Compare x, y, z and a values
+      debug:
+        msg:
+         - "x>y and y in z: {{x>y and y in z}}"
+         - "y=a and x not in z: {{y==a and x not in z}}"
+         - "x>y and x>z and a not in z: {{x>y and x>a and a not in z}}"
+         - "x<y or y not in z or y==a: {{x<y or y not in z or y==a}}"
+         - "{{not (4>2) or (3>4)}}"
