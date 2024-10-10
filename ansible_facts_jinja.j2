@@ -5,3 +5,13 @@ Ansible Dist release is: {{ ansible_distribution_release }}
 Ansible Dist version is: {{ ansible_distribution_version }}
 Ansible Hostname is: {{ ansible_hostname }}
 Ansible Distribution is: {{ ansible_distribution }}
+
+FQDN={{ ansible_facts['fqdn'] }}
+DISTRIBUTION={{ ansible_facts['distribution'] }}
+DISTRIBUTION_VERSION={{ ansible_facts['distribution_version'] }}
+ADMIN_OWNER={{ admin_owner }}
+SYSTEM_OWNER_EMAIL={{ system_owner_email }}
+
+MemoryTotal={{ ansible_facts['memtotal_mb'] }}
+ProcessorCount={{ ansible_facts['processor_count'] }}
+System={{ ansible_system }}
