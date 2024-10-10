@@ -1,0 +1,54 @@
+---
+- name: Creating Multiple users
+  hosts: localhost
+  vars:
+    users: [murali,girija,dinesh,kavi,joshi]
+    pkgs: [httpd, ftp, htop, telnet]
+
+  tasks:
+    - name: Create multi users
+      user:
+        name: '{{item}}'
+        state: present
+      with_items: '{{users}}'
+    
+    - name: Create multi users
+      user:
+        name: '{{item}}'
+      loop:
+        - murali
+        - girija
+        - dinesh
+        - joshi
+        - kavi
+      
+    - name: Install Multi Pkgs
+      yum:
+        name: '{{item}}'
+      with_items: '{{pkgs}}'
+      
+    - name: Copy multiple files
+      copy:
+         src: "{{ item }}"
+         dest: /tmp/dest/
+      with_items:
+        - /tmp/source/test1
+        - /tmp/source/test2
+        - /tmp/source/test3
+        - /tmp/source/test4
+
+    - name: Generating messages
+      shell: "echo This is my item {{ item }}"
+      loop:
+        - one
+        - two
+        - three
+        - four
+        - five
+      register: message_data
+
+    - name: Displaying messages
+      debug:
+        msg: "{{ item.stdout }}"
+      loop: "{{ message_data['results'] }}"
+      
