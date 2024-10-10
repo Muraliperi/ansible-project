@@ -1,0 +1,32 @@
+---
+- name: Printing lists and dictionaries
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+    my_lists:
+      - chennai
+      - bangalore
+      - hyderabad
+      - delhi
+
+    my_dicts:
+      'company': 'OpenTxt'
+      'Onwer': 'Mark'
+      'Revenue': '2Bl'
+      'Experience': '15 years'
+
+      #my_list: ['chennai','bangalore','hyderabad','delhi']
+      #my_dict: {'company':'opentext', 'ceo':'Mark', 'Revenue':'2Bl', 'Exp':'15 years'}
+
+  tasks:
+    - name: Printing list vars
+      ansible.builtin.debug:
+        var: my_lists[0]
+
+    - name: Printing dictionaries
+      ansible.builtin.debug:
+        var: my_dicts['company']
+        #var: my_dict.get('company') --> We can use get function also to fetch value
+        #var: my_dict.keys()
+        #var: my_dict.values()
