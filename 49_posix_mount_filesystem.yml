@@ -49,3 +49,35 @@
         fstype: nfs
         opts: "{{ myopts }}"
         state: mounted
+---
+- name: mount windows share on Linux demo
+  hosts: localhost
+  become: true
+
+  vars:
+    uri: "//windows-pc/share"
+    username: "example@domain"
+    password: "password"
+    mount_path: /share
+
+  tasks:
+    - name: install utility package
+      ansible.builtin.package:
+        name: cifs-utils
+        state: present
+
+    - name: Check mountpoint exist
+      ansible.builtin.file:
+        name: "{{ mount_path }}"
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Mount network share
+      ansible.posix.mount:
+        src: "{{ uri }}"
+        path: "{{ mount_path }}"
+        fstype: cifs
+        opts: "username={{ username }}, password={{ password }}"
+        state: mounted
