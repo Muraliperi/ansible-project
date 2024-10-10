@@ -31,6 +31,21 @@
         name: karthi
         update_password: always
         password: "{{ newpassword|password_hash('sha512') }}"
+
+---
+- name: user module demo - password change
+  hosts: localhost
+  vars:
+    myuser: "example"
+    mypasswd: "password"
+
+  tasks:
+    - name: Changing user's password
+      ansible.builtin.user:
+        name: "{{ myuser }}"
+        state: present
+        password: "{{ mypasswd | password_hash('sha512') }}"
+        
 ---
 - name: Create multi users
   hosts: localhost
