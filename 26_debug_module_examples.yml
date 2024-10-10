@@ -67,3 +67,18 @@
     - name: Printing discovery info of servers
       debug:
         msg: "{{up_time.stdout.split(',')[0].split(' ')[-1]}}"
+
+---
+- hosts: centosstream7
+  gather_facts: true
+  tasks:
+    - name: Displaying all ansible_facts variable
+      debug:
+        var: ansible_facts
+
+    - name: Display specific ansible facts
+      debug:
+        msg: "{{ ansible_facts['devices']['dm-0']['size'] }},
+              {{ ansible_facts['devices']['dm-1']['size'] }},
+              {{ ansible_facts['devices']['sda']['size'] }},
+              {{ ansible_facts['devices']['sr0']['size'] }}"
