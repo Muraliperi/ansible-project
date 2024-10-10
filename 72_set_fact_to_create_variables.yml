@@ -18,3 +18,15 @@
 
     - name: Printing bash version
       debug: var=bash_version
+---
+- name: Generating hypervisor name
+  gather_facts: true  # Ensure that ansible facts are gathered
+  hosts: localhost
+
+  tasks:
+    - name: Set hypervisor variable
+      set_fact: 
+        hypervisor: "{{ ansible_hostname.split('-')[0] ~ '-' ~ 'xyzf' ~ ansible_hostname.split('-')[2][:3] }}"
+    - name: Show the hypervisor name
+      debug:
+        msg: "The hypervisor name is {{ hypervisor}}"
