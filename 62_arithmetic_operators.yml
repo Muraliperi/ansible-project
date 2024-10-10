@@ -1,0 +1,20 @@
+---
+- name: Playbook for Arithmetic operations
+  hosts: localhost
+  gather_facts: False
+  vars:
+    x: 345
+    y: 780
+
+  tasks:
+    - name: Printing x and y values
+      debug:
+        msg:
+         - "x value is:{{x}}"
+         - "y value is:{{y}}"
+         - "{{x}} + {{y}} value is:{{x+y}}"
+         - "{{y}} - {{x}} value is:{{y-x}}"
+         - "{{x}} - {{y}} value is:{{x-y}}"
+         - "{{x}} * {{y}} value is:{{x*y}}"
+         - "{{x}} / {{y}} value is:{{x/y}}"
+         - "{{x}} % {{y}} value is:{{x%y}}"
