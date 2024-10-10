@@ -1,0 +1,20 @@
+---
+- name: Working with comparision operators
+  hosts: localhost
+  gather_facts: False
+  vars:
+    x: 45
+    y: 78
+    z: 45
+
+  tasks:
+    - name: Comparing x, y and z variables
+      debug:
+        msg:
+         - "x == y {{x==y}}"
+         - "x != y {{x!=y}}"
+         - "x > y {{x>y}}"
+         - "x >= y {{x>=y}}"
+         - "y >= x {{y>=x}}"
+         - "y > x {{y>x}}"
+         - "x == z {{x==z}}"
