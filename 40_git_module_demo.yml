@@ -1,0 +1,29 @@
+---
+- name: Git Module Demo
+  hosts: localhost
+  become: false
+
+  tasks:
+    - name: Checkout Git Repository
+      ansible.builtin.git:
+        repo: https://github.com/Muraliperi/Hello-world
+        dest: /tmp/github
+        
+- name: Git repo checkout through ssh key
+  hosts: localhost
+  vars:
+    repo: "git@github.com:Muraliperi/ansible-project.git"
+    dest: "/tmp/github2"
+
+  tasks:
+    - name: Ensuring yum install
+      ansible.builtin.yum:
+        name: git
+        state: present
+        update_cache: true
+      become: true
+
+    - name: Checkout git through ssh
+      ansible.builtin.git:
+        repo: '{{ repo }}'
+        dest: '{{ dest }}'
