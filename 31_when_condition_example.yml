@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Run with item greater than 5
+      command: echo "{{ item }}"
+      loop: [0, 2, 3, 4, 5, 6, 7, 9]
+      when: item > 5
+      
