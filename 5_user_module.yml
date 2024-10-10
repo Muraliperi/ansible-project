@@ -16,3 +16,28 @@
         name: karthi
         update_password: always
         password: "{{ newpassword|password_hash('sha512') }}"
+---
+- name: Create multi users
+  hosts: localhost
+  tasks:
+    - name: Creating multiple groups
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - production
+        - development
+        - test
+
+    - name: Creating multiple users
+      user:
+        name: "{{ item.name }}"
+        group: "{{ item.group }}"
+        state: present
+      loop:
+        - name: shanthanu
+          group: production
+        - name: himanshu
+          group: development
+        - name: ganesh
+          group: test
