@@ -1,0 +1,25 @@
+---
+- name: Playing with Arithmetice operators based on user input
+  hosts: localhost
+  gather_facts: False
+  vars_prompt:
+    - name: a
+      prompt: Enter a value
+      private: False
+    - name: b
+      prompt: Enter b value
+      private: False
+
+  vars:
+    x: 78
+    y: "{{x+ 45}}"
+
+  tasks:
+    - name: Printing x and y values
+      debug:
+        msg:
+         - "x value is: {{x}}"
+         - "y value is: {{y}}"
+         - "z value is: {{a|int +x + y|int}}"
+         - "{{a}} - {{b}} value is: {{a|int - b|int}}"
+         - "{{a}} + {{b}} value is: {{a|int + b|int}}"
