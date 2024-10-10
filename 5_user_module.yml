@@ -1,0 +1,12 @@
+---
+- name: Creating a local user on Client machine
+  hosts: all
+
+  tasks:
+    - name: Creating karthi user on Linux Client
+      user:
+        name: karthi
+        create_home: True
+        home: /home/karthi
+        comment: Kadhal Mannan
+        shell: /bin/bash
