@@ -1,0 +1,19 @@
+---
+- name: Synchronize module demo
+  hosts: localhost
+  become: true
+
+  vars:
+    source: "/etc/ansible/playbooks"
+    destination: "/tmp/playbooks-backup"
+
+  tasks:
+    - name: install rsync package
+      yum:
+        name: rsync
+        state: present
+
+    - name: Performing rsync
+      ansible.posix.synchronize:
+        src: "{{ source }}"
+        dest: "{{ destination }}"
