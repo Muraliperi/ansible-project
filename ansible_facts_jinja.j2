@@ -16,3 +16,9 @@ MemoryTotal={{ ansible_facts['memtotal_mb'] }}
 ProcessorCount={{ ansible_facts['processor_count'] }}
 System={{ ansible_system }}
 This is a sample file from {{inventory_hostname}} and port number is {{req_port}}
+
+HOST= {{ ansible_hostname }}
+MEMORY= {{ ansible_facts['memtotal_mb'] }}
+BIOS= {{ ansible_bios_version }}
+VDA_DISK_SIZE= {{ ansible_facts['devices']['sda']['size'] }}
+VDB_DISK_SIZE= {{ ansible_facts['devices']['sdb']['size'] }}
