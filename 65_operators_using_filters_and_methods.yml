@@ -1,0 +1,26 @@
+---
+- name: Converting mixed upper and lower case lines
+  hosts: localhost
+  gather_facts: False
+  vars:
+    x: "This Is THe exampLE PLayBook"
+    y: "45"
+    z: [23, 45, 12, 78, 98]
+
+  tasks:
+    - name: Printing x value using Ansible Filters "|"
+      debug:
+        msg:
+         - "{{x|lower}}"
+         - "{{x|upper}}"
+         - "{{x|title}}"
+         - "{{y|int}}"
+    - name: Printing x value using Python Methods ".xxyy()"
+      debug:
+        msg:
+         - "{{x.lower()}}"
+         - "{{x.upper()}}"
+         - "{{x.title()}}"
+         - "{{x.split()}}"
+         - "The maximum number in z is: {{z|max}}"
+         - "The minimum number in z is: {{z|min}}"
