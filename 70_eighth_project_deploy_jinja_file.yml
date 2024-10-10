@@ -1,0 +1,39 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Copy file test.txt
+      copy:
+        src: test.txt
+        dest: /root/abc.txt
+
+    - name: Fetch fdisk output
+      shell: "fdisk -l | awk '/sd/' |grep Disk | awk '{print $2}'| tr -d ':'"
+      register: drivers_data
+
+    - name: Fetch /dev/sda size
+      shell: "fdisk -l | grep sd | awk '/Disk/' | awk '{print $3 $4}' | tr -d ','"
+      register: devsda_size
+
+    - name: Displays output
+      debug:
+        var: devsda_size.stdout
+
+    - name: Fetch bash version
+      shell: "bash --version"
+      register: bash_out
+
+    - set_fact:
+        bash_version: "{{ bash_out.stdout.split('\n')[0].split(' ')[3] }}"
+
+    - name: Write /root/abc.txt file when sdb drive available
+      template:
+        src: templates/abc.txt2.j2
+        dest: /root/abc.txt
+      when: "'/dev/sdb' in drivers_data.stdout"
+
+    - name: Write /root/abc.txt file when sdb drive not available
+      template:
+        src: templates/abc.txt.j2
+        dest: /root/abc.txt
+      when: "'/dev/sdb' not in drivers_data.stdout"
