@@ -207,4 +207,24 @@
       fail:
         msg: "Failed because rc is 0"
       when: home_out.rc == 0
+---
+- name: "Rocky Linux 9 - CVE-2024-6387: regreSSHion"
+  hosts: all
+  become: true
+  tasks:
+    - name: Upgrade openssh
+      dnf:
+        name:
+          - openssh
+          - openssh-clients
+          - openssh-server
+        state: latest
+      when: ansible_facts.distribution_major_version is version('9', '=')
+      notify:
+        - ssh service restart
+  handlers:
+    - name: ssh service restart
+      service:
+        name: sshd
+        state: restarted[
     
