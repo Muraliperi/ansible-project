@@ -28,3 +28,16 @@
       loop:
         - /var/log/messages
         - /var/log/syslog
+---
+- name: fetch module demo
+  hosts: linuxclient2
+  vars:
+    source_file: "/var/log/messages"
+
+  tasks:
+    - name: Copy file from Remote to local
+      fetch:
+        src: "{{ source_file }}"
+        dest: /tmp/log/{{ inventory_hostname }}_messages
+        flat: true
+      become: true
