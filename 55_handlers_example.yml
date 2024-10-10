@@ -1,4 +1,23 @@
 ---
+- name: Handlers example playbook
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Install httpd pkgs
+      yum:
+        name: httpd
+        state: present
+      notify:
+        - start httpd
+
+  handlers:
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+
+---
 - name: SELinux policy update
   hosts: localhost
   become: true
