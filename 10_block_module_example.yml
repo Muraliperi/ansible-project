@@ -1,0 +1,31 @@
+---
+- name: Block module sample play execution
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+     - block:
+        - name: listing /home directory
+          command: "ls /home"
+          register: home_out
+
+        - name: listing /mnt directory
+          command: "ls /mnt"
+          register: mnt_out
+
+        - name: listing /tmp directory
+          command: "ls /tmp"
+          register: tmp_out
+       ignore_errors: True
+
+     - name: Printing /home directory contents
+       debug:
+         var: home_out.stdout_lines
+
+     - name: Printing /mnt directory contents
+       debug:
+         var: mnt_out.stdout_lines
+
+     - name: Printing /tmp directory contents
+       debug:
+         var: tmp_out.stdout_lines
