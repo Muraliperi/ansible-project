@@ -24,3 +24,17 @@
         path: "{{ item.path }}"
         state: absent
       with_items: "{{ collected_files.files }}"
+      
+    - name: Find Files ends with audit.log.51...150 range for R8
+        find:
+          paths: "{{ audit_log_dir}}"
+          patterns: 'audit\.log\.(5[1-9]|[6-9][0-9]|1[0-4][0-9]|150)$'
+          use_regex: yes
+          file_type: file
+        register: old_files
+        
+    - name: Removing Found files for R8
+        file:
+          path: "{{ item.path }}"
+          state: absent
+        with_items: "{{ old_files.files }}"
