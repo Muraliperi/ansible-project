@@ -272,4 +272,31 @@
         state: restarted
 
   when: epel_installed.rc == 0 and epel_version.stdout != '97.76.0.13'
-    
+  
+---
+- name: Check if NTP service is running
+  command: systemctl is-active ntpd
+  register: ntp_status
+  ignore_errors: yes
+
+- name: Update ntp source for Centos7
+  copy:
+    src: /tmp/ntp.conf
+    dest: /etc/ntp.conf
+    mode: '0644'
+    backup: yes
+  notify:
+    - ntp service restart
+    - ntp sources
+    - ntp sources status
+  when: ntp_status.stdout == 'active' and ansible_facts.distribution_major_version is version('7', '=')
+
+handlers:
+  - name: ntp sources
+    command: ntpq -p
+    register: ntp_source
+    ignore_errors: true
+
+  - name: ntp source status
+    debug:
+      msg: "{{ ntp_source }}"
