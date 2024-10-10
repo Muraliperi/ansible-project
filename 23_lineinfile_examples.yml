@@ -55,3 +55,32 @@
         backrefs: yes
         state: present
         backup: yes
+---
+- name: Insert line before using lineinfile.
+  hosts: localhost
+  vars:
+    mypath: /etc/postfix/main.cf
+    my_regex: "^# directory must be owned by root"
+    inseartbefore_line: "# daemon_directory .*"
+    new_line: "ServerAdmin murali@admin.com"
+
+  tasks:
+    - name: Commentout a line
+      ansible.builtin.lineinfile:
+        path: "{{ mypath }}"
+        regexp: "{{ my_regex }}"
+        insertbefore: "{{ inseartbefore_line }}"
+        line: "{{ new_line }}"
+        state: present
+        backup: yes
+---
+- name: Delete a line
+  hosts: localhost
+  tasks:
+    - name: Delete a line
+      ansible.builtin.lineinfile:
+        path: /etc/postfix/main.cf
+        # The below line will be deleted
+        regexp: "html_directory = yes"
+        state: absent
+        backup: yes
