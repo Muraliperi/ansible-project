@@ -1,0 +1,9 @@
+---
+- name: Guided practice
+  hosts: centosstream7, rockylinux9
+  tasks:
+     - name: Add a line to /tmp/testloop.yml file
+      lineinfile:
+        path: /tmp/testloop.yml
+        line: 'This line added from Ansible playbook'
+        state: present
