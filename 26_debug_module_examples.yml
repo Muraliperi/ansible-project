@@ -26,3 +26,11 @@
     - name: Displays last 10 files from /tmp/testloop.yml after addding new line
       debug:
         msg: "{{ testloop_data.stdout.split('\n') }}"
+
+    - name: Capturing current working directory(S) file(s) list
+      ansible.builtin.shell: 'ls -lrt *'
+      register: command_output
+
+    - name: Listing files under current directory
+      ansible.builtin.debug:
+        var: command_output.stdout_lines
