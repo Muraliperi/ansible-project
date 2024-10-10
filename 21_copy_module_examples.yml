@@ -27,3 +27,15 @@
           dest: /etc/audit/auditd.conf_{{ansible_date_time.date}}.bkp
           backup: yes
           remote_src: yes
+
+   - name: Copy multiple configuration files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: /tmp/file1.conf, dest: /etc/app/file1.conf }
+        - { src: /tmp/file2.conf, dest: /etc/app/file2.conf }
+      args:
+        owner: root   # Common owner for all files
+        group: root   # Common group for all files
+        mode: '0644'  # Common permissions for all files
