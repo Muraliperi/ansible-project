@@ -1,0 +1,102 @@
+---
+- name: /etc/audit/auditd.conf file update
+  hosts: rockylinux9
+
+  vars:
+    audit_conf: /etc/audit/auditd.conf
+    audit_log_dir: /var/log/audit
+    max_log_file_action_value: "ROTATE"
+    num_logs_value: 50
+
+  tasks:
+    - block:
+      - name: Find Files Older Than 30 Days
+        find:
+          paths: "{{ audit_log_dir }}"
+          age: 30d
+          file_type: file
+        register: old_files
+
+      - name: Removing Found files
+        file:
+          path: "{{ item.path }}"
+          state: absent
+        with_items: "{{ old_files.files }}"
+
+      - name: Fetch auditd PID
+        shell: "cat /run/auditd.pid"
+        register: auditd_pid
+
+      - name: Take backup of existing auditd.conf file
+        copy:
+          src: "{{audit_conf}}"
+          dest: "{{audit_conf}}_{{ansible_date_time.date}}-{{ansible_date_time.time}}.bkp"
+          backup: yes
+          remote_src: yes
+
+      - name: Check for max_log_file_action duplicate values
+        lineinfile:
+          path: "{{audit_conf}}"
+          create: false
+          regexp: (?i)^\s*max_log_file_action\s+
+          state: absent
+        check_mode: true
+        changed_when: false
+        register: dupes
+
+      - name: Deduplicate values from {{audit_conf}}
+        lineinfile:
+          path: "{{audit_conf}}"
+          create: false
+          regexp: (?i)^\s*max_log_file_action\s+
+          state: absent
+        when: dupes.found is defined and dupes.found > 1
+
+      - name: Check for num_logs duplicate values
+        lineinfile:
+          path: "{{audit_conf}}"
+          create: false
+          regexp: (?i)^\s*num_logs\s+
+          state: absent
+        check_mode: true
+        changed_when: false
+        register: dupes2
+
+      - name: Deduplicate values from {{audit_conf}}
+        lineinfile:
+          path: "{{audit_conf}}"
+          create: false
+          regexp: (?i)^\s*num_logs\s+
+          state: absent
+        when: dupes2.found is defined and dupes2.found > 1
+
+      - name: Insert correct value {{max_log_file_action_value}} to max_log_file_action in {{audit_conf}}
+        lineinfile:
+          path: "{{audit_conf}}"
+          regexp: (?i)^\s*max_log_file_action\s+
+          line: max_log_file_action = {{max_log_file_action_value}}
+          state: present
+          insertbefore: ^[#\s]*Match
+          #validate: /usr/sbin/auditd -t %s
+        notify:
+          - reload auditd config
+          - rotate auditd logs
+
+      - name: Insert correct value {{ num_logs_value}} to num_logs in {{audit_conf}}
+        lineinfile:
+          path: "{{audit_conf}}"
+          regexp: (?i)^\s*num_logs\s+
+          line: num_logs = {{num_logs_value}}
+          state: present
+          insertbefore: ^[#\s]*Match
+          #validate: /usr/sbin/auditd -t %s
+        notify:
+          - reload auditd config
+          - rotate auditd logs
+      when: (ansible_facts['distribution'] == "Rocky" and ansible_facts['distribution_major_version'] == "9") or (ansible_facts['distribution'] == "Rocky" and ansible_facts['distribution_major_version'] == "8")
+  handlers:
+    - name: reload auditd config
+      shell: "kill -HUP {{ auditd_pid.stdout }}"
+
+    - name: rotate auditd logs
+      shell: "kill -USR1 {{ auditd_pid.stdout }}"
