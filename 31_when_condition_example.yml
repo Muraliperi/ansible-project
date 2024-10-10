@@ -6,3 +6,16 @@
       loop: [0, 2, 3, 4, 5, 6, 7, 9]
       when: item > 5
       
+    - name: Start apache2 service
+      service:
+        name: httpd
+        state: started
+      register: service_status
+      ignore_errors: true
+      
+    - name: Fail with custom message if httpd service failed to start
+      fail:
+        msg: "Failed to start httpd service, check httpd service status and review logs"
+      when: service_status.failed
+      
+      
