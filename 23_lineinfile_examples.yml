@@ -15,3 +15,11 @@
         state: present
         line: PasswordAuthentication yes
         validate: 'sshd -t -f %s'
+        notify:
+          - Restarting sshd
+
+  handlers:
+    - name: Restarting sshd
+      service:
+        name: sshd
+        state: restarted
