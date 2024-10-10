@@ -1,0 +1,26 @@
+    - name: Install MySQL community Repository
+      yum:
+        name: "http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm"
+        state: present
+
+    - name: Install MySQL database
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - mysql-server
+        - mysql
+
+    - name: Create MySQL configuration file
+      copy:
+        content: |
+           [client]
+           user=root
+           password={{ db_usr_pass }}
+           dest: /etc/.my.cnf
+
+    - name: Start and Enable MySQL service
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
