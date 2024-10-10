@@ -1,0 +1,28 @@
+---
+- name: Fet df -h out
+  hosts: LinuxClient2
+
+  tasks:
+    - name: Execute shell module to fetch df -h
+      shell: "df -h"
+      register: data_out
+
+    - name: Display /data fs usage
+      debug:
+        var: data_out.stdout_lines
+
+    - name: Get the PID of auditd
+      command: pidof auditd
+      register: auditd_pid
+
+    - name: Display the PID of auditd
+      debug:
+        msg: "The PID of auditd is {{ auditd_pid.stdout }}"
+
+    - name: Fetch file content
+      shell: "tail -10 /tmp/testloop.yml"
+      register: testloop_data
+
+    - name: Displays last 10 files from /tmp/testloop.yml after addding new line
+      debug:
+        msg: "{{ testloop_data.stdout.split('\n') }}"
