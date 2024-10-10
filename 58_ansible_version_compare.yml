@@ -1,0 +1,12 @@
+---
+- name: Versions compare
+  hosts: localhost
+  tasks:
+    - name: Print ansible version
+      ansible.builtin.debug:
+        var: ansible_version.full
+
+    - name: Compare versions
+      ansible.builtin.debug:
+        msg: "Version correct!"
+      when: ansible_version.full is version('2.5','>=')
