@@ -55,3 +55,15 @@
           - "my os name is: {{ ansible_distribution }}"
           - "my os family is: {{ ansible_os_family }}"
           - "my mount pionts are: {{ ansible_mounts }}"
+---
+- name: Generate .csv file for discovery info
+  hosts: linux
+  gather_facts: False
+  tasks:
+    - name: Fetching uptime of the server
+      shell: "uptime"
+      register: up_time
+
+    - name: Printing discovery info of servers
+      debug:
+        msg: "{{up_time.stdout.split(',')[0].split(' ')[-1]}}"
