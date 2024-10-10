@@ -1,0 +1,51 @@
+---
+- name: Install web application and database
+  hosts: centosstream7
+  tasks:
+    - name: Install Python Pip and dependencies on Centos 7
+      yum:
+        name:
+          - epel-release
+          - python
+          - python-pip
+
+    - name: Upgrade pip
+      pip:
+        name: pip
+        state: latest
+
+    - name: Ensure flask and flask-mysql module installed
+      pip:
+        name:
+          - flask
+          - flask-mysql
+        extra_args: "--trusted-host files.pythonhosted.org --trusted-host pypi.org --trusted-host pypi.python.org"
+        state: present
+      ignore_errors: yes
+
+    - name: Download MySQL community release RPM
+      get_url:
+        url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+        dest: /tmp/mysql-community-release-el7-5.noarch.rpm
+
+    - name: Install MySQL community release RPM
+      yum:
+        name: /tmp/mysql-community-release-el7-5.noarch.rpm
+        state: present
+
+    - name: Update all packages to the latest version
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install MySQL server
+      yum:
+        name: mysql-server
+        state: present
+        update_cache: yes
+
+    - name: Start MySQL service
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
