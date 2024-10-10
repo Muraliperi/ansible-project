@@ -1,0 +1,69 @@
+# This playbook example for long running jobs which runs in the background.
+- name: This playbook demonstrates async and poll
+  hosts: development
+  tasks:
+    - name: Download the moview in the share folder
+      get_url:
+         url: http://media.example.com/moview/mymovie.mkv
+         dest: /data/collection/movies
+      async: 3600 # The maximum time the task would expect to get completed. How long in seconds it will wait. Set to zero 0 for long running tasks which you can't predict the completion time, set the value for async to 0 to wait as long as it takes to complete the job. How long to run ?
+      poll: 30 # How many seconds interval it will poll and check the status of file download's. Set poll to zero 0 to skip the waiting for the task completion and move to the next tasks. How fequently to check
+
+- name: Restart server and wait for it to back Online
+  hosts: production
+  tasks:
+    - name: Restart server
+      shell: sleep 2 && shutdown -r now "Ansible triggered reboot"        # Executes the shutdown command after a short sleep period.
+      async: 1                                                            # Runs the command asynchronously, meaning it doesn't wait for the command to finish.
+      poll: 0                                                             # Tells Ansible not to wait for the result of the command, allowing the playbook to continue immediately.
+      ignore_errors: true
+
+    - name: Waiting for the server to back online, Checking remote servers status from localhost / ansible control node
+      wait_for:                  # This module checks for a specific condition (in this case, SSH availability).
+         host: "{{ inventory_hostname }}"
+         state: started
+         delay: 30              # Introduce a delay of 30 seconds before starting the check.(Initial wait before starting to check.)
+         timeout: 300           # Timeout after 300 seconds if the server is not back online (Total time to keep checking until it gives up.)
+         port: 22               # Check port 22 (SSH) to confirm the server is accessible.
+      delegate_to: localhost    # Run the check from the localhost (Ansible control node).
+      become: false
+
+- name: This will check async job status
+  hosts: stage
+  tasks:
+    - name: Download ubuntu image
+      get_url:
+        url: http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/mini.iso
+        dest: /tmp/
+      async: 3600     # Maximum time in seconds for the task to run
+      poll: 0         # Don't wait for the task to complete
+      register: download_iso
+
+    - name: Wait for download to finish
+      async_status:
+        jid: "{{ download_iso.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30
+
+
+- name: Deploy Web Application
+  hosts: db_and_web_server
+  tasks:
+    - name: Execute monitor script and move to the next task
+      command: /opt/monitor_webapp.py
+      async: 360
+      poll: 0
+      register: webapp_result
+
+    - name: Execute monitor script and move to the next task
+      command: /opt/monitor_database.py
+      async: 360
+      poll: 0
+      register: webapp_result
+
+    - name: Check status of tasks
+      async_status: jid={{ webapp_result.ansible_job_id }}  # async_status module checks the status of the asynchronous job until it finishes
+      register: job_result
+      until: job_result.finished
+      retries: 30                                           # retrying every 30 seconds
