@@ -1,0 +1,16 @@
+{
+ "name": "murali",
+ "age": 29,
+ "department": "IT",
+ "properties": ["Trichy", "Bangalore", "Chennai", "Delhi", 2995],
+ "owners":
+  {
+   "own1": "sachin",
+   "own2": "shewag",
+   "own3": "dhoni"
+
+  },
+ "x": "abc",
+ "y": "def"
+
+}
