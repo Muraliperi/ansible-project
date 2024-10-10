@@ -45,3 +45,15 @@
         owner: root   # Common owner for all files
         group: root   # Common group for all files
         mode: '0644'  # Common permissions for all files
+---
+- name: Copy multiple files
+  hosts: localhost
+  tasks:
+    - name: copy multiple files using copy module
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/tmp/destdir"
+        owner: root
+        mode: '0644'
+      with_fileglob:
+        - "/tmp/sourcedir/*.json"
