@@ -1,0 +1,17 @@
+---
+- name: Guided practice
+  hosts: centosstream7, rockylinux9
+  tasks:
+    - name: Adding multiline to /tmp/testloop.yml file
+      blockinfile:
+        path: /tmp/testloop.yml
+        block: |
+         This is a block of text
+         line 1
+         line 2
+         line 3
+         ..
+         ..
+         line n
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        state: present
