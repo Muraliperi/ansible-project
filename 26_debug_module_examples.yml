@@ -34,3 +34,11 @@
     - name: Listing files under current directory
       ansible.builtin.debug:
         var: command_output.stdout_lines
+---
+- name: Environment demo
+  hosts: localhost
+  # 'printenv' command will print available list of environments
+  tasks:
+    - name: display HOME
+      ansible.builtin.debug:
+        msg: "{{ lookup('env', 'HOME') }}"
