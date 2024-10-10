@@ -8,3 +8,9 @@
   hosts: LinuxClient1
   roles:
     - fullinstall
+
+- name: App Role Playbook
+  roles:
+    - httpd
+    - time
+    - dns
