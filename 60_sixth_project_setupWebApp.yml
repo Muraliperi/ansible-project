@@ -1,0 +1,49 @@
+setupWebApp.yml
+    - name: Install mysql-python package
+      yum:
+        name: MySQL-python
+        state: present
+
+    - name: Ensure Python 3 and pip are installed
+      yum:
+        name:
+          - python36
+          - python36-pip
+        state: present
+
+    - name: Create a virtual environment
+      command: python3 -m venv /opt/my_flask_app/venv
+      args:
+        creates: /opt/my_flask_app/venv
+
+    - name: Install Flask and Flask-MySQL
+      pip:
+        virtualenv: /opt/my_flask_app/venv
+        name:
+          - Flask
+          - Flask-MySQL
+
+    - name: Ensure virtual environment is activated
+      shell: source /opt/my_flask_app/venv/bin/activate
+      args:
+
+
+    - name: Create Application Database
+      mysql_db:
+        name: "{{ db_name }}"
+        state: present
+
+    - name: Create Database User
+      community.mysql.mysql_user:
+        name: "{{ db_usr_name }}"
+        password: "{{ db_usr_pass }}"
+        priv: '*.*:ALL'
+        state: present
+
+    - name: Copy source code
+      copy:
+        src: app.py
+        dest: /opt/app.py
+
+    - name: Start web server
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 &
