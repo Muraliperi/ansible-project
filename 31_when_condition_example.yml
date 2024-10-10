@@ -135,3 +135,18 @@
         msg: "x is in z: {{x}} is in {{z}}"
       when: x in z
 
+
+---
+- name: Install a package
+  hosts: localhost
+
+  vars:
+    my_task: true
+
+  tasks:
+    - name: Install postfix package on the host
+      yum:
+        name: postfix
+        state: present
+      when: my_task
+[tom@ansible-control-node when_condition]$
