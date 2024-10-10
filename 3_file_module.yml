@@ -1,0 +1,12 @@
+---
+- name: Creating and Changing file permissions
+  hosts: all
+
+  tasks:
+    - name: File creation and permission change
+      file:
+        path: /tmp/abc.txt
+        state: touch
+        mode: 0755
+        owner: testuser
+        group: testuser
