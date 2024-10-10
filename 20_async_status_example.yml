@@ -1,0 +1,20 @@
+---
+- name: Deploy Web Application
+  hosts: db_and_web_server
+  tasks:
+    - name: Execute monitor script and move to the next task
+      command: /opt/monitor_webapp.py
+      async: 360
+      poll: 0
+      register: webapp_result
+
+    - name: Execute monitor script and move to the next task
+      command: /opt/monitor_database.py
+      async: 360
+      poll: 0
+      register: webapp_result
+
+    - name: Check status of tasks
+      async_status: jid={{ webapp_result.ansible_job_id }}  # async_status module checks the status of the asynchronous job until it finishes
+      register: job_result
+      until: job_result.finished
