@@ -1,0 +1,30 @@
+---
+- name: Guided practice
+  hosts: centosstream7, rockylinux9
+  tasks:
+    - name: Copy /var/log/messages files from remote hosts
+      fetch:
+        src: /var/log/messages
+        dest: /etc/ansible/playbooks/secure-data/
+        mode: '0755'
+        flat: yes                             # flat: (Optional) If set to yes, this will copy all files into a single directory without creating subdirectories based on the hostnames. If you want to maintain the directory structure, set this to no or omit it.
+        validate_checksum: false              # Setting this to false skips checksum validation, which can speed up the transfer if you trust the integrity of the files.
+
+    - name: Copy log files
+      fetch:
+        src: "{{ item }}"
+        dest: /tmp/logs/
+        flat: yes  # Optional: Keep all files in a single directory
+      loop:
+        - /var/log/messages
+        - /var/log/syslog
+        - /var/log/auth.log
+
+    - name: Copy log files with timestamp
+      fetch:
+        src: "{{ item }}"
+        dest: "/tmp/logs/{{ item | basename }}-{{ ansible_date_time.iso8601 }}.log"
+        flat: no  # Maintain directory structure
+      loop:
+        - /var/log/messages
+        - /var/log/syslog
