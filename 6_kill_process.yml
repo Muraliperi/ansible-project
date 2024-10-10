@@ -1,0 +1,19 @@
+---
+- name: Find a process and kill it
+  hosts: all
+
+  tasks:
+    - name: Find process id for httpd service
+      ignore_errors: yes
+      shell: "ps -few|grep httpd|awk '{print $2}'"
+      register: running_process
+
+    - name: Kill httpd process
+      ignore_errors: yes
+      shell: kill {{ item }}
+      with_items: "{{ running_process.stdout_lines}}"
+
+    - name: Disabling httpd process at run time
+      service:
+        name: httpd
+        enabled: no
