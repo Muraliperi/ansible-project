@@ -18,4 +18,17 @@
         msg: "Failed to start httpd service, check httpd service status and review logs"
       when: service_status.failed
       
-      
+---
+- name: Start http if postfix active
+  hosts: centosstream7
+  tasks:
+    - name: Check postfix status
+      command: /usr/bin/systemctl is-active postfix
+      ignore_errors: true
+      register: result
+
+    - name: Start httpd if postfix is activity
+      service:
+        name: httpd
+        state: restarted
+      when: result.rc == 0
