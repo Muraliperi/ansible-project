@@ -1,0 +1,16 @@
+---
+- name: Cron module demo
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Updating test cronjob
+      ansible.builtin.cron:
+        name: "Test cronjob"
+        state: present
+        minute: "*/2"
+        hour: "*"
+        month: "*"
+        day: "*"
+        weekday: "*"
+        job: 'logger "ansible-node-test-cron-messagie"'
