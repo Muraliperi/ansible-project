@@ -1,0 +1,12 @@
+---
+- name: user module demo
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: group wheel and adm creation
+      ansible.builtin.group:
+        name: administrators
+        state: present
+        system: no
+        local: yes
