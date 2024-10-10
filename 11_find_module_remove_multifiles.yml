@@ -1,0 +1,26 @@
+---
+- name: Delete multiple files in a directory using find module
+  hosts: localhost
+  become: true
+
+  vars:
+    my_dir: "/tmp/a/b"
+
+  tasks:
+    - name: collect files
+      ansible.builtin.find:
+        paths: "{{ my_dir }}"
+        hidden: true
+        recurse: true
+        file_type: any
+      register: collected_files
+
+    - name: Printing all debug output
+      ansible.builtin.debug:
+        var: collected_files
+
+    - name: Removing collected files
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ collected_files.files }}"
