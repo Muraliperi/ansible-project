@@ -1,0 +1,14 @@
+---
+- name: Install package only if it is missing
+  gather_facts: true
+  host: localhost
+  tasks:
+    - name: Check if black installed
+      shell: command -v black
+      register: black_exists
+      ignore_errors: true
+
+    - name: Install black
+      shell: pipx install black
+      when: black_exists is failed
+
