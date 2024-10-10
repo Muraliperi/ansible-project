@@ -37,3 +37,20 @@
         src: templates/abc.txt.j2
         dest: /root/abc.txt
       when: "'/dev/sdb' not in drivers_data.stdout"
+      
+[root@ansible-control-node playbooks]# cat templates/abc.txt.j2
+HOST= {{ ansible_hostname }}
+MEMORY= {{ ansible_facts['memtotal_mb'] }}
+BIOS= {{ ansible_bios_version }}
+VDA_DISK_SIZE= {{ ansible_facts['devices']['sda']['size'] }}
+VDB_DISK_SIZE= "NONE"
+BASH_VERSION={{ bash_version }}
+[root@ansible-control-node playbooks]#
+[root@ansible-control-node playbooks]# cat templates/abc.txt2.j2
+HOST= {{ ansible_hostname }}
+MEMORY= {{ ansible_facts['memtotal_mb'] }}
+BIOS= {{ ansible_bios_version }}
+VDA_DISK_SIZE= {{ ansible_facts['devices']['sda']['size'] }}
+VDB_DISK_SIZE= {{ ansible_facts['devices']['sdb']['size'] }}
+BASH_VERSION={{ bash_version }}
+[root@ansible-control-node playbooks]#
