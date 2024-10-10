@@ -1,0 +1,7 @@
+---
+- name: Execute shell script
+  hosts: all
+
+  tasks:
+    - name: Creating a file
+      shell: "/root/cfile.sh"
