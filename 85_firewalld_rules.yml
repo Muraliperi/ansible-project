@@ -1,0 +1,32 @@
+- name: Firewall rules for web
+  firewalld:
+    source: 192.168.1.0/24
+    zone: truested
+    permanent: yes
+    state: enabled
+  when: "'web' in group_names"
+
+- name: Firewall rules for db
+  firewalld:
+    source: 192.168.2.0/24
+    zone: truested
+    permanent: yes
+    state: enabled
+  when: "'db' in group_names"
+
+- firewalld:
+    port: 433/tcp
+    zone: dmz
+    permanent: yes
+    state: enabled
+
+- firewalld:
+    port: 80/tcp
+    zone: dmz
+    permanent: yes
+    state: enabled
+
+- name: Firewalld service reload
+  service:
+    name: firewalld
+    state: reloaded
