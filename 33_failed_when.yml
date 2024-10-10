@@ -1,0 +1,10 @@
+---
+- name: Wantedly failing a task
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: List out /home
+      command: "ls /home"
+      register: home_out
+      failed_when: home_out.rc == 0
