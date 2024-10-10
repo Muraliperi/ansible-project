@@ -1,0 +1,26 @@
+-
+    name: 'Perform the below tasks'
+    hosts: all
+    become: true
+    tasks:
+
+        -   name: 'blog.txt'
+            ansible.builtin.replace:
+              path: /opt/data/blog.txt
+              regexp: 'xFusionCorp'
+              replace: 'Nautilus'
+            when: ansible_nodename == "stapp01.stratos.xfusioncorp.com"
+
+        -   name: 'story.txt'
+            ansible.builtin.replace:
+              path: /opt/data/story.txt
+              regexp: 'Nautilus'
+              replace: 'KodeKloud'
+            when: ansible_nodename == "stapp02.stratos.xfusioncorp.com"
+
+        -   name: 'media.txt'
+            ansible.builtin.replace:
+              path: /opt/data/media.txt
+              regexp: 'KodeKloud'
+              replace: 'xFusionCorp Industries'
+            when: ansible_nodename == "stapp03.stratos.xfusioncorp.com"
