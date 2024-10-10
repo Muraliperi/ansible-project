@@ -1,0 +1,56 @@
+---
+- name: Install and configure tomcat
+  hosts: linuxclient2
+  vars:
+    required_java: java-1.8.0-openjdk
+    set_java: jre-1.8.0-openjdk
+    tomcat_path: /tmp/tomcat
+    req_tomcat_ver: "9.0.93"
+    tomcat_url: "https://dlcdn.apache.org/tomcat/tomcat-{{req_tomcat_ver.split('.')[0]}}/v{{req_tomcat_ver}}/bin/apache-tomcat-{{req_tomcat_ver}}.tar.gz"
+    tomcat_port: 8090
+
+  tasks:
+    - name: Update all packages to the latest version
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install required java package
+      yum:
+        name: "{{required_java}}"
+        state: present
+
+    - name: Setting default java
+      alternatives:
+        name: java
+        link: /usr/bin/java  # which java - command will provide this path
+        path: "/usr/lib/jvm/{{set_java}}/bin/java"  # alternatives --config java - comand will provide this path to choose appropriate java version
+                                                    # /usr/lib/jvm/jre-xx.xx.xx-openjdk/bin/java -version - if this command shows target java versoin then update this in path argument
+
+    - name: Creating tomcat directory
+      file:
+        path: "{{tomcat_path}}"
+        state: directory
+        mode: '0755'
+
+    - name: Downloading tomcat version
+      get_url:
+        url: "{{tomcat_url}}"
+        dest: "{{tomcat_path}}"
+
+    - name: Extracting downloaded tomcat
+      unarchive:
+        src: "{{tomcat_path}}/apache-tomcat-{{req_tomcat_ver}}.tar.gz"
+        dest: "{{tomcat_path}}"
+        remote_src: true
+
+    - name: Renaming tomcat home
+      command: "mv {{tomcat_path}}/apache-tomcat-{{req_tomcat_ver}} {{tomcat_path}}/latest"
+
+    - name: Replacing default port with required port
+      template:
+        src: server.xml.j2
+        dest: /tmp/tomcat/latest/conf/server.xml
+
+    - name: Starting tomcat
+      shell: "nohup {{tomcat_path}}/latest/bin/startup.sh &"
