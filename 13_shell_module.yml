@@ -5,3 +5,22 @@
   tasks:
     - name: Set password expiration to 99999 days for root user
       shell: "chage -M 99999 root"
+---
+- name: Finding OS distribution and name
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Finding OS distribution
+      shell: "cat /etc/os-release | awk -F = 'NR==1 {print $2}'|awk '{print $1}'|tr '\"' ' '"
+      register: os_dist
+
+    - name: Finding OS name
+      shell: uname
+      register: os_name
+
+    - name: Printing os name and distribution
+      debug:
+        msg:
+          - "OS name is {{ os_name.stdout }}"
+          - "OS distribution is{{ os_dist.stdout}}"
