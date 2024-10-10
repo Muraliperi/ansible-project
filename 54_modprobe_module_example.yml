@@ -1,0 +1,13 @@
+---
+- name: Adding kernel module using modprobe
+  hosts: localhost
+  become: true
+  vars:
+    module_name: "dummy_module"
+    module_params: "dummy_params=1"
+  tasks:
+    - name: Load the kernel modules
+      community.general.modprobe:
+        name: "{{ module_name }}"
+        state: present
+        params: "{{ module_params }}"
