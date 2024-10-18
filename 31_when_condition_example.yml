@@ -300,3 +300,48 @@ handlers:
   - name: ntp source status
     debug:
       msg: "{{ ntp_source }}"
+---
+- name: certs copy on httpd nodes
+  block:
+    - name: Copy cert files for httpd
+      copy:
+        src: "{{ ssl_cert }}"
+        dest: "{{ ssl_cert_dest }}.crt.{{cr_year}}"  # cr_year is current year. Ex: 2023
+      notify:
+        - reinstall CA certificate
+        - httpd service restart
+    - name: httpd certs link
+      file:
+        src: "{{ ssl_cert_dest }}.crt.{{cr_year}}"
+        dest: "{{ item }}"
+        state: link
+      loop:
+        - /etc/xxyy/tls/certs/xxyyzz.domain_name.com.crt
+        - /etc/xxyy/tls/certs/localhost.crt
+    - name: Copy serverchain for httpd
+      copy:
+        src: "{{source_file_location}}"
+        dest: "{{dest_file_location}}"
+      notify:
+        - reinstall CA certificate
+        - httpd service restart
+  when: "'db' in group_names"   
+- name: certs copy on httpd nodes
+  block:
+    - name: Copy cert files for httpd
+      copy:
+        src: "{{ ssl_cert }}"
+        dest: "{{ ssl_cert_dest }}.crt.{{cr_year}}"  # cr_year is current year. Ex: 2023
+      notify:
+        - reinstall CA certificate
+        - httpd service restart
+    - name: httpd certs link
+      file:
+        src: "{{ ssl_cert_dest }}.crt.{{cr_year}}"
+        dest: "{{ item }}"
+        state: link
+      loop:
+        - /etc/xxyy/tls/certs/xxyyzz.domain_name.com.crt
+        - /etc/xxyy/tls/certs/localhost.crt
+  when: "'web' in group_names and 'test' in group_names"  
+        
