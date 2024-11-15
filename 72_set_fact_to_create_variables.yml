@@ -30,3 +30,30 @@
     - name: Show the hypervisor name
       debug:
         msg: "The hypervisor name is {{ hypervisor}}"
+
+---
+- name: Generating hypervisor name
+  gather_facts: true  # Ensure that ansible facts are gathered
+  hosts: localhost
+
+  tasks:
+    - name: Set hypervisor variable
+      set_fact: 
+        hypervisor: "{{ ansible_hostname.split('-')[0] ~ '-' ~ 'xyzf' ~ ansible_hostname.split('-')[2][:3] }}"
+        node_heat: >
+          {%- if 'm' in ansible_hostname %}
+            master
+          {%- elif 'h' in ansible_hostname %}
+            hot
+          {%- elif 'c' in ansible_hostname %}
+            cold
+          {%- endif %}
+        node_master: >
+          {%- if 'm' in ansible_hostname %}
+            true
+          {%- elif 'h' in ansible_hostname %}
+            false
+          {%- endif %}
+    - name: Show the hypervisor name
+      debug:
+        msg: "The hypervisor name is {{ hypervisor}}"
