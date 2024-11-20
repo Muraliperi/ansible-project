@@ -57,3 +57,47 @@
     - name: Show the hypervisor name
       debug:
         msg: "The hypervisor name is {{ hypervisor}}"
+
+---
+- name: Playing with set_facts if else condition to generate hostnames
+  hosts: rockylinux9.example1.com, centosstream8.example2.com, centosstream7.example3.com
+  tasks:
+    - name: Collection of set facts
+      set_fact:
+        one: "Hello"
+        two: "{{ ansible_domain }}"
+        three: "{{ ansible_distribution_file_variety[3:6] }}"
+        four: "{{ ansible_distribution }}"
+        five: "{{ ansible_distribution_major_version }}"
+        DC: "{% if ansible_domain == 'example1.com' %}DC1\
+             {% elif ansible_domain == 'example2.com' %}DC2\
+             {% else %}DC3\
+             {% endif %}"
+
+    - name: Displaying set facts one
+      debug:
+        msg: "{{ one }}"
+
+    - name: Display set fact two
+      debug:
+        msg: "{{ two }}"
+
+    - name: Display set fact three
+      debug:
+        msg: "{{ three }}"
+
+    - name: Display set fact four
+      debug:
+        msg: "{{ four }}"
+
+    - name: Display set fact five
+      debug:
+        msg: "{{ five }}"
+
+    - name: Display DC name
+      debug:
+        msg: "Your DC for {{ ansible_hostname }} is {{ DC }}"
+
+    - name: Combine
+      debug:
+        msg: "{{ one }}-{{ two }}-{{ three }}-{{ four }}{{ five }}-{{ DC }}"
