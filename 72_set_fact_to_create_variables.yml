@@ -53,11 +53,20 @@
             true
           {%- elif 'h' in ansible_hostname %}
             false
+          {%- elif 'c' in ansible_hostname %}
+            false
           {%- endif %}
+        jvm_size: >
+          {%- if 'm' in ansible_hostname %}
+            16g
+          {%- elif 'h' in ansible_hostname %}
+            30g
+          {%- elif 'c' in ansible_hostname %}
+            30g
+          {%- endif %}        
     - name: Show the hypervisor name
       debug:
         msg: "The hypervisor name is {{ hypervisor}}"
-
 ---
 - name: Playing with set_facts if else condition to generate hostnames
   hosts: rockylinux9.example1.com, centosstream8.example2.com, centosstream7.example3.com
