@@ -107,6 +107,9 @@
       debug:
         msg: "Your DC for {{ ansible_hostname }} is {{ DC }}"
 
+    - name: Combine
+      debug:
+        msg: "{{ one }}-{{ two }}-{{ three }}-{{ four }}{{ five }}-{{ DC }}"
 
 ---
 - name: Generate Crypt storage key
@@ -161,6 +164,4 @@
 
       when: not key_status.stat.exists
 
-    - name: Combine
-      debug:
-        msg: "{{ one }}-{{ two }}-{{ three }}-{{ four }}{{ five }}-{{ DC }}"
+
