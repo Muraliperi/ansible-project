@@ -107,6 +107,60 @@
       debug:
         msg: "Your DC for {{ ansible_hostname }} is {{ DC }}"
 
+
+---
+- name: Generate Crypt storage key
+  hosts: test-server
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: host_name
+      prompt: "Enter the target host name without domain"
+      private: false
+
+    - name: target_ip
+      prompt: "Enter the target host's IP"
+      private: false
+
+  tasks:
+    - name: Clean the values
+      set_fact:
+        target_host: "{{ host_name.split('.')[0] }}"
+
+    - name: verify status of the key
+      stat:
+        path: /tmp/{{target_host}}/test.txt
+      register: key_status
+
+    - name: Fail if key is found
+      fail:
+        msg: "The key is already present!"
+      when: key_status.stat.exists
+
+    - name: New Key generation
+      block:
+        - name: information of Key generation
+          debug:
+            msg: " The new key will be generate for the {{target_host}}.erado.net {{target_ip}}"
+
+        - name: Generating Key
+          shell: /tmp/test.sh {{target_host}}.domain.com {{target_ip}}
+          register: cryptgen
+
+        - name: Key generation output
+          debug:
+            msg: "{{cryptgen}}"
+
+        - name: sync keys
+          shell: /test/script2.sh
+          register: keysync
+
+        - name: key sync status
+          debug:
+            msg: "{{keysync}}"
+
+      when: not key_status.stat.exists
+
     - name: Combine
       debug:
         msg: "{{ one }}-{{ two }}-{{ three }}-{{ four }}{{ five }}-{{ DC }}"
