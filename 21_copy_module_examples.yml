@@ -68,5 +68,8 @@
         src: "{{item.path}}"
         dest: /var/log/
         remote_src: yes
-
+      loop:
+      - { path: '/path/to/file1' }
+      - { path: '/path/to/file2' }
+      - { path: '/path/to/file3' }
 
