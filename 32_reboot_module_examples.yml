@@ -10,3 +10,21 @@
         pre_reboot_delay: 5
         post_reboot_delay: 5
         test_command: "uptime"
+- name: Restart server and wait for it to back Online
+  hosts: production
+  tasks:
+    - name: Restart server
+      shell: sleep 2 && shutdown -r now "Ansible triggered reboot"        # Executes the shutdown command after a short sleep period.
+      async: 1                                                            # Runs the command asynchronously, meaning it doesn't wait for the command to finish.
+      poll: 0                                                             # Tells Ansible not to wait for the result of the command, allowing the playbook to continue immediately.
+      ignore_errors: true
+
+    - name: Waiting for the server to back online, Checking remote servers status from localhost / ansible control node
+      wait_for:                  # This module checks for a specific condition (in this case, SSH availability).
+         host: "{{ inventory_hostname }}"
+         state: started
+         delay: 30              # Introduce a delay of 30 seconds before starting the check.(Initial wait before starting to check.)
+         timeout: 300           # Timeout after 300 seconds if the server is not back online (Total time to keep checking until it gives up.)
+         port: 22               # Check port 22 (SSH) to confirm the server is accessible.
+      delegate_to: localhost    # Run the check from the localhost (Ansible control node).
+      become: false
