@@ -48,3 +48,4 @@
     src: "{{item.path}}"
     dest: /var/log/
     remote_src: yes
+  with_items: "{{systems_logs.files}}"
