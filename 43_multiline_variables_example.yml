@@ -23,3 +23,18 @@
     - name: Printing var2 message
       ansible.builtin.debug:
         var: variable2
+OUTPUT:
+******
+TASK [Printing var1 message] ************************************************************************************************************************************************************************************
+ok: [localhost] =>
+  msg:
+  - A paragraph is a self-contained unit of discourse
+  - in writing dealing with a particular point or idea.
+  - Though not required by the orthographic conventions
+  - of any language with a writing system, paragram
+
+TASK [Printing var2 message] ************************************************************************************************************************************************************************************
+ok: [localhost] =>
+  variable2: |2-
+
+    A paragraph is a self-contained unit of discourse in writing dealing with a particular point or idea. Though not required by the orthographic conventions of any language with a writing system, paragram
