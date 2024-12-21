@@ -1,0 +1,41 @@
+# Pre-requisites for this Ansible playbook
+# pip install netaddr
+
+---
+name: IP Address
+vars:
+  ip_list:
+    - 192.168.0.1
+    - 192.168.1.0/24 # change this IP to 192.168.1.0/16 and update any update address in 35th, 36th & 37th line to validate if it's True or False
+    - 192.168.100.23
+    - 300.1.1.1
+    - fd00::/8
+    - 100.10.10.1
+    - 192.168.10.1/24
+    - 192.168.0.22
+tasks:
+  - name: Helps to validate IP Address, Extract IP information and perform network calculations.
+    ansible.builtin.debug:
+        msg:
+          - "{{ '192.168.0.0' | ansible.utils.ipaddr }}"   # Check if a string is Valid IP or not returns True for 192.168.0.0 
+          - "{{ '300.168.0.0' | ansible.utils.ipaddr }}"   # Returns False for invalid IP 300.168.0.0
+          - "{{ ip_list | ansible.utils.ipaddr }}"         # Checking valid IP address against list of IP's in "ip_list" list variable
+          - "{{ ip_list | ansible.utils.ipv4 }}"           # If you want to list only ipv4 address from "ip_list" list
+          - "{{ ip_list | ansible.utils.ipv6 }}"           # If you want to list only ipv6 address from "ip_list" list
+          - "{{ ip_list | ansible.utils.ipv4('address') }}"# If you want to list only the Host Address from "ip_list" list(It will EXCLUDE /23, /24 from Host Address)
+          - "{{ ip_list | ansible.utils.ipv4('host') }}"   # If you want to list only the Host Address from "ip_list" list (INCLUDE /23 & /24 for Host Address)
+          - "{{ ip_list | ansible.utils.ipv4('public') }}" # If you want to fetch only Publi IP's from "ip_list" list
+          - "{{ ip_list | ansible.utils.ipv4('net') }}"    # If you want to only return Network Address from "ip_list" list
+          - "{{ ip_list | ansible.utils.ipv4('192.168.0.0/24') }}" # If you want to check if any IP address in particular subnet from "ip_list" list
+          - "{{ ip_list | ansible.utils.ipv4('host/prefix') }}"  # Print the host IP with ipaddress/32 or ipaddress/24
+          - "Address is        : {{ ip_list[6] | ansible.utils.ipv4('address') }}" # Return IP address for 192.168.10.1/24
+          - "Network is        : {{ ip_list[6] | ansible.utils.ipv4('network') }}" # Return Gateway address for 192.168.10.1/24
+          - "netmask is        : {{ ip_list[6] | ansible.utils.ipv4('netmask') }}" # Return Netmask address for 192.168.10.1/24
+          - "broadcast is      : {{ ip_list[6] | ansible.utils.ipv4('broadcast') }}" # Return IP address for 192.168.10.1/24
+          - "Usable IP         : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.0') }}" # IP Address 192.168.1.0 is in 192.168.1.0/24 subnet, But it is a Gateway IP, so returns False
+          - "Usable IP         : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.255') }}" # IP Address 192.168.1.255 is in 192.168.1.0/24 subnet, But it is ending with .255 so returns False
+          - "Usable IP         : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.0') }}" # IP Address 192.168.20.0 is NOT in 192.168.1.0/24 subnet, so returns False
+          - "Usable IP         : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.0') }}" # IP Address 192.168.2.0 is NOT in 192.168.1.0/16 subnet, so returns False
+          - "Usable IP         : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.10') }}" # IP Address 192.168.1.10 is in 192.168.1.0/24 subnet, so returns True
+          - "Usable Network in : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.1.16/28') }}" # Subnet '192.168.1.16/28' resides in 192.168.1.0/24 subnet, so returns True
+          - "Usable Network in : {{ ip_list[1] | ansible.utils.network_in_usable('192.168.2.16/28') }}" # Subnet '192.168.2.16/28' is NOT resides in 192.168.1.0/24 subnet, so returns False
