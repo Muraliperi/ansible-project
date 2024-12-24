@@ -5,6 +5,10 @@ Ansible Dist release is: {{ ansible_distribution_release }}
 Ansible Dist version is: {{ ansible_distribution_version }}
 Ansible Hostname is: {{ ansible_hostname }}
 Ansible Distribution is: {{ ansible_distribution }}
+Ansible Date is: {{ansible_date_time.date}}
+Ansible Time in Date is: {{ ansible_date_time.hour }}
+Ansible DateTimeMinute is: {{ ansible_date_time.minute }}
+Ansible DateTimeSecond is: {{ ansible_date_time.second }}
 
 FQDN={{ ansible_facts['fqdn'] }}
 DISTRIBUTION={{ ansible_facts['distribution'] }}
