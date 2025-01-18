@@ -9,6 +9,8 @@ Ansible Date is: {{ansible_date_time.date}}
 Ansible Time in Date is: {{ ansible_date_time.hour }}
 Ansible DateTimeMinute is: {{ ansible_date_time.minute }}
 Ansible DateTimeSecond is: {{ ansible_date_time.second }}
+Ansible IP Address: {{ ansible_default_ipv4.address }}
+Ansible All IP Address Lists: {{ ansible_all_ipv4_addresses }}
 
 FQDN={{ ansible_facts['fqdn'] }}
 DISTRIBUTION={{ ansible_facts['distribution'] }}
