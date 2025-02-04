@@ -28,3 +28,7 @@ MEMORY= {{ ansible_facts['memtotal_mb'] }}
 BIOS= {{ ansible_bios_version }}
 VDA_DISK_SIZE= {{ ansible_facts['devices']['sda']['size'] }}
 VDB_DISK_SIZE= {{ ansible_facts['devices']['sdb']['size'] }}
+
+Manufacturer= {{ansible_system_vendor}}
+ModelID= {{ansible_product_name}}
+SerialNumber= {{ansible_product_serial}}
