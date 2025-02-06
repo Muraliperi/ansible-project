@@ -1,3 +1,4 @@
+# Looping through List
 ---
 - name: Creating Multiple users
   hosts: localhost
@@ -51,4 +52,20 @@
       debug:
         msg: "{{ item.stdout }}"
       loop: "{{ message_data['results'] }}"
+
+# Looping through Dictionary
+---
+- name: Looping techniques
+  hosts: localhost
+  gather_facts: false
+  vars:
+    user: 
+      name: Murali
+      group: devops
+      type: manager
+  tasks:
+    - name: Loop through user
+      debug:
+        msg: "Hello, {{ item.key }} ==  {{ item.value }}"
+      loop: "{{ user | dict2items }}"                         # dict2items used for looping through a dictionary and | pipe symbol used to convert dictionary into List.
       
