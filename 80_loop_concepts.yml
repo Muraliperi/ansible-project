@@ -87,4 +87,9 @@
       debug:
         msg: "Package is {{ item.name }}, State will be {{ item.state }}"
       loop: "{{ packages }}"
+
+    - name: Loop through packages
+      debug:
+        msg: "Package is {{ item['name'] }}, State will be {{ item['state'] }}"
+      loop: "{{ packages }}"
       
