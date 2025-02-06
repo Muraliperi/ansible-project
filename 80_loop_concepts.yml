@@ -68,4 +68,23 @@
       debug:
         msg: "Hello, {{ item.key }} ==  {{ item.value }}"
       loop: "{{ user | dict2items }}"                         # dict2items used for looping through a dictionary and | pipe symbol used to convert dictionary into List.
+
+# Looping through Dictionaries
+---
+- name: Looping techniques
+  hosts: localhost
+  gather_facts: false
+  vars:
+    packages:
+      - name: httpd
+        state: present
+
+      - name: apache
+        state: absent
+    
+  tasks:
+    - name: Loop through packages
+      debug:
+        msg: "Package is {{ item.name }}, State will be {{ item.state }}"
+      loop: "{{ packages }}"
       
