@@ -93,3 +93,26 @@
         msg: "Package is {{ item['name'] }}, State will be {{ item['state'] }}"
       loop: "{{ packages }}"
       
+# Looping through Nested Map's
+---
+- name: Looping techniques
+  hosts: localhost
+  gather_facts: false
+  vars:
+    packages:
+      - name: httpd
+        state: present
+        extras:
+          arch: x64
+          type: rpm
+
+      - name: apache
+        state: absent
+        extras:
+          arch: x84
+          type: debian
+  tasks:
+    - name: Loop through packages
+      debug:
+        msg: "Package arch is {{item.extras.arch}} type {{ item.extras.type}} "
+      loop: "{{ packages }}"
