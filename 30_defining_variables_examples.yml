@@ -1,3 +1,90 @@
+1. Inside Ansible Playbook File
+You can define variables directly within your playbook file.
+
+2. Separate Variable File under ansible playbook location
+Create a separate file for variables, e.g., vars.yml:
+vi vars.yml
+web_package: httpd
+web_service: httpd
+firewall_package: firewalld
+firewall_service: firewalld
+
+Referencing Variable File in Playbook (You can reference this variable file in your playbook using vars_files)
+vars_files:
+  - vars.yml
+OR
+Including Variable File in a Task (Alternatively, you can include the variable file within a task)
+- name: Include variables
+  include_vars: vars.yml
+
+4) Group Variables
+Group variables are used to define common configurations for a group of hosts. 
+They are typically stored in the group_vars directory within your Ansible project.
+Defining Group Variables
+You create a YAML file for each group in the group_vars directory. For example, if you have a group called web_servers, db_servers, you would create a file named db_servers.yml:
+Here’s how you can use them:
+ # group_vars/web_servers.yml
+ntp_server: ntp.example.com
+web_port: 80
+# group_vars/db_servers.yml
+db_host: localhost
+db_port: 3306
+db_user: admin
+db_password: secret
+Using Group Variables in Playbooks
+- hosts: web_servers
+  tasks:
+    - name: Ensure NTP is configured
+      ansible.builtin.command: ntpdate {{ ntp_server }}
+    - name: Ensure web server is running
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        port: {{ web_port }}
+- hosts: db_servers
+  tasks:
+    - name: Ensure database is reachable
+      ansible.builtin.command: mysql -h {{ db_host }} -P {{ db_port }} -u {{ db_user }} -p{{ db_password }}
+
+5) Variable Precedence
+Ansible has a specific order of precedence for variables. Group variables are overridden by host variables, playbook variables, 
+and command-line variables 1. Understanding this precedence helps manage conflicts and ensures the correct values are used.
+
+6) Dynamic Group Variables
+Dynamic group variables are generated during the execution of a playbook, often based on external data sources or scripts. 
+This is useful for environments where configurations change frequently.
+Creating Dynamic Group Variables
+You can use the set_fact module to create dynamic variables. For example, you might fetch data from an API and set it as a variable:
+- hosts: all
+  tasks:
+    - name: Fetch data from API
+      uri:
+        url: http://api.example.com/data
+        method: GET
+        return_content: yes
+      register: api_data
+
+    - name: Set dynamic group variable
+      set_fact:
+        dynamic_var: "{{ api_data.json.some_key }}"
+Using Dynamic Group Variables
+Once set, these variables can be used like any other variable in your playbooks:
+- hosts: all
+  tasks:
+    - name: Use dynamic variable
+      debug:
+        msg: "The value of dynamic_var is {{ dynamic_var }}"
+
+7) Advanced Techniques
+You can combine dynamic variables with Jinja2 templates for more complex scenarios. For example, you might generate a configuration file based on dynamic data:
+- hosts: all
+  tasks:
+    - name: Generate config file
+      template:
+        src: config.j2
+        dest: /etc/myapp/config.conf
+##########################################################################################################################################
+
 [root@ansible-control-node playbooks]# cat /etc/ansible/playbooks/advanced_1/create_variables.yml
 ---
     a: 5
