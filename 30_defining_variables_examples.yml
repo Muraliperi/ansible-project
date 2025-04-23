@@ -83,6 +83,24 @@ You can combine dynamic variables with Jinja2 templates for more complex scenari
       template:
         src: config.j2
         dest: /etc/myapp/config.conf
+8) Set common defaults in a group_vars/all file. See Organizing host and group variables for details on how to organize host and group variables in your inventory. 
+Group variables are generally placed alongside your inventory file, but they can also be returned by dynamic inventory (see Working with dynamic inventory) 
+or defined in AWX or on Red Hat Ansible Automation Platform from the UI or API:
+---
+# file: /etc/ansible/group_vars/all
+# this is the site wide default
+ntp_server: default-time.example.com
+9) If one host used a different NTP server, you could set that in a host_vars file, which would override the group variable:
+---
+# file: /etc/ansible/host_vars/xyz.boston.example.com
+ntp_server: override.example.com
+10) Set defaults in roles to avoid undefined-variable errors. If you share your roles, other users can rely on the 
+reasonable defaults you added in the roles/x/defaults/main.yml file, or they can easily override those values in inventory or at the command line. See Roles for more info. For example:
+---
+# file: roles/x/defaults/main.yml
+# if no other value is supplied in inventory or as a parameter, this value will be used
+http_port: 80
+https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-examples
 ##########################################################################################################################################
 
 [root@ansible-control-node playbooks]# cat /etc/ansible/playbooks/advanced_1/create_variables.yml
