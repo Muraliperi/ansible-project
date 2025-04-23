@@ -1,0 +1,116 @@
+Inventory Example:
+
+[Prod]
+client1
+client2
+
+[Dev]
+client3
+client4
+client5
+
+[Test]
+client7
+client8
+client9
+1)  Use ansible_user if a server uses a different port (e.g., 1234) for SSH and requires a different user for administration.
+[Web]
+client3:1234 ansible_connection=ssh ansible_user=john  
+client4
+2) Execute a playbook against a range of IPs. Use `ansible --list-hosts serverip`.
+[serverip]
+192.168.2.[0:100]  
+client[01.20]      # Execute a playbook against a range of clients from 01 to 20.
+
+# You can specify a stride (increments between sequence numbers) when defining a numeric range of hosts
+[webservers]
+www[01:50:2].example.com
+
+# Ranges are inclusive. You can also define alphabetic ranges:
+[databases]
+db-[a:f].example.com
+
+# Assigning a variable to one machine: host variables
+You can easily assign a variable to a single host and then use it later in playbooks. You can do this directly in your inventory file.
+
+[atlanta]
+host1 http_port=80 maxRequestsPerChild=808
+host2 http_port=303 maxRequestsPerChild=909
+
+Unique values like non-standard SSH ports work well as host variables. You can add them to your Ansible inventory by adding the port number after the hostname with a colon:
+badwolf.example.com:5309
+This is a good way to define ‘Connection variables’ (variables used to configure connection, shell, become plugins to enable executing tasks on the host):
+
+[targets]
+localhost              ansible_connection=local
+other1.example.com     ansible_connection=ssh        ansible_user=myuser
+other2.example.com     ansible_connection=ssh        ansible_user=myotheruser
+
+Inventory aliases
+The inventory_hostname is the unique identifier for a host in Ansible, this can be an IP or a hostname, but also just an ‘alias’ or short name for the host.
+jumper ansible_port=5555 ansible_host=192.0.2.50
+
+Examples from an Ansible-INI host file:
+some_host         ansible_port=2222     ansible_user=ansible_adm
+aws_host          ansible_ssh_private_key_file=/home/example/.ssh/aws.pem
+freebsd_host      ansible_python_interpreter=/usr/local/bin/python
+ruby_module_host  ansible_ruby_interpreter=/usr/bin/ruby.1.9.3
+
+# Group within a group
+[Europe:children]
+Prod
+Dev
+
+[America:children]
+Lab
+Test
+
+[AllHosts:children]
+Europe
+America
+
+[SpecialHosts]
+special1
+special2
+
+3) Ansible Connection Types
+Ansible supports various connection types, each suited for different environments and use cases. Here are some common examples:
+
+SSH (Secure Shell): 
+Default: Uses the native OpenSSH client.
+ansible_connection: ssh
+
+Paramiko: A Python implementation of SSH.
+ansible_connection: paramiko
+
+Local: Executes tasks on the local machine where Ansible is running.
+ansible_connection: local
+
+WinRM (Windows Remote Management):
+Used for managing Windows hosts.
+ansible_connection: winrm
+
+Docker: Connects to Docker containers.
+ansible_connection: docker
+
+Podman:Connects to Podman containers.
+ansible_connection: podman
+
+Network CLI: Used for network devices, such as routers and switches.
+ansible_connection: network_cli
+
+
+HTTPAPI: Connects to network devices using HTTP-based APIs.
+ansible_connection: httpapi
+
+
+Connects to network devices using HTTP-based APIs.
+
+Jail: Connects to FreeBSD jails.
+ansible_connection: jail
+
+Chroot: Connects to chroot environments.
+ansible_connection: chroot
+
+Libvirt: Connects to virtual machines managed by libvirt.
+ansible_connection: libvirt
