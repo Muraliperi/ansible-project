@@ -1,0 +1,17 @@
+Popular Lookup Plugins (Basics)
+================================
+Plugin	   What It Does	                                     Example
+========   ==============                                    =========
+env	       Gets environment variables	                       lookup('env', 'PATH')
+file	     Reads contents of a local file	                   lookup('file', '/etc/hosts')
+password	 Generates random passwords	                       lookup('password', '/tmp/p.txt length=15')
+pipe	     Runs a local shell command and reads output	     lookup('pipe', 'date')
+template	 Processes a Jinja2 template from a file	         lookup('template', 'mytemplate.j2')
+csvfile    Parses a line from a CSV	                         lookup('csvfile', 'users.csv')
+ini        Gets data from an INI file	                       lookup('ini', 'section.key file=settings.ini')
+########################################################################################################################
+Tips & Gotchas
+==============
+Lookups run on the control node, not the managed host.
+Always wrap them in {{ }} when using them in tasks or templates.
+Many plugins accept kwargs like delimiter=, length=, etc.
