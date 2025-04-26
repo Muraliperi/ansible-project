@@ -1,7 +1,28 @@
+#######################################################################################
+# If condition
 [root@ansible-control-node playbooks]# cat ./templates/if_condition.j2
 {% if x > y %}
 x is greater than y
 {% endif %}
+#######################################################################################
+# If, else - Part1
+[root@ansible-control-node playbooks]# cat ./templates/else_if_condition.j2
+{% if x > y %}
+X is greater than Y
+{% else %}
+Y is greater than X
+{% endif %}
+[root@ansible-control-node playbooks]#
+---------------------------------------------------------------------------
+# If, else - Part2
+Total Memory: {{ ansible_memtotal_mb }}
+{% if ansible_memtotal_mb > 100 %}
+Memory is LARGE
+{% else %}
+Memory is SMALL
+{% endif %}
+#######################################################################################
+# if, elif, else
 [root@ansible-control-node playbooks]# cat ./templates/elif_condition.j2
 {% if x > y %}
 x is greater. The value of x is: {{x}}
@@ -10,22 +31,42 @@ y is greater. The value of y is: {{y}}
 {% else %}
 x and y values are equal. The value of x is: {{x}} The value of y is: {{y}}
 {% endif %}
-[root@ansible-control-node playbooks]# cat ./templates/else_if_condition.j2
-{% if x > y %}
-X is greater than Y
-{% else %}
-Y is greater than X
-{% endif %}
 [root@ansible-control-node playbooks]#
 #######################################################################################
-Total Memory: {{ ansible_memtotal_mb }}
-{% if ansible_memtotal_mb > 100 %}
-Memory is LARGE
-{% else %}
-Memory is SMALL
-{% endif %}
-#######################################################################################
+# For Loop
 {% for host in groups['all'] %}
-{{ hostvars[host]['ansible_facts']['default_uov4']['address']}} {{ hostvars[host]['ansible_facts']['hostname'] }}
+{{ hostvars[host]['ansible_facts']['default_ipv4']['address']}} {{ hostvars[host]['ansible_facts']['hostname'] }}
 {% endfor %}
 #######################################################################################
+#Filter
+{% for item in users_detail%}
+{% if item.role == 'admin' %}
+hello {{ item.name | upper }}, you are the Administrator !!
+{% else %}
+Hello, {{ item.name }}.
+{% endif %}
+{% endfor %}
+#######################################################################################
+# Inheritance
+[root@ansible-control-node playbooks]# cat ./base.j2
+<html>
+<head><title>{{ title }}</title></head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
+[root@ansible-control-node playbooks]# cat ./child.j2
+{% extends 'base.j2' %}                                      --> This is inherited from base.j2
+{% block content %}
+<h1>Welcome to {{ title }}</h1>
+{% endblock %}
+[root@ansible-control-node playbooks]#
+#######################################################################################
+# Jinja inside tasks
+- name: Debug tasks Jinja2
+  ansible.builtin.debug:
+    msg: |
+         {% for user in user_detail %}
+         | {{user.name }} | {{ user.age }} |
+         {% endfor %}
+
