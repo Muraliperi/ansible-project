@@ -69,4 +69,17 @@ Hello, {{ item.name }}.
          {% for user in user_detail %}
          | {{user.name }} | {{ user.age }} |
          {% endfor %}
+-------------------------------------------------------------------------------------------------------------
+#You can use Jinja2 templating within Ansible tasks to handle conditional logic with if, elif, and else statements. 
+#Here's an example of how you can assign different values to a variable based on conditions:
+- name: Assign values based on conditions
+  set_fact:
+    my_variable: >-
+      {% if condition1 %}
+        value1
+      {% elif condition2 %}
+        value2
+      {% else %}
+        value3
+      {% endif %}
 
