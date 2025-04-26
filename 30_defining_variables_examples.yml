@@ -90,10 +90,12 @@ or defined in AWX or on Red Hat Ansible Automation Platform from the UI or API:
 # file: /etc/ansible/group_vars/all
 # this is the site wide default
 ntp_server: default-time.example.com
-9) If one host used a different NTP server, you could set that in a host_vars file, which would override the group variable:
+9) File Separation: If one host used a different NTP server, you could set that in a host_vars file, which would override the group variable:
 ---
 # file: /etc/ansible/host_vars/xyz.boston.example.com
 ntp_server: override.example.com
+ansible_ssh_pass: Password0
+ansible_host: 192.168.23.2
 10) Set defaults in roles to avoid undefined-variable errors. If you share your roles, other users can rely on the 
 reasonable defaults you added in the roles/x/defaults/main.yml file, or they can easily override those values in inventory or at the command line. See Roles for more info. For example:
 ---
