@@ -82,4 +82,26 @@ Hello, {{ item.name }}.
       {% else %}
         value3
       {% endif %}
-
+--------------------------------------------------------------------------------------------------------------
+[root@ansible-control-node ansible-trainings]# cat config.j2
+# config.j2
+{% if env == 'production' %}
+server_name: prod.example.com
+{% elif env == 'staging' %}
+server_name: staging.example.com
+{% else %}
+server_name: dev.example.com
+{% endif %}
+[root@ansible-control-node ansible-trainings]# cat jinja-practice.yml 
+---
+- name: Practicing Jinja Template
+  hosts: localhost
+  vars:
+    env: production
+  tasks:
+    - name: Create configuration file 
+      template: 
+         src: config.j2
+         dest: /tmp/jinja-config.txt
+[root@ansible-control-node ansible-trainings]#
+--------------------------------------------------------------------------------------------------------------
