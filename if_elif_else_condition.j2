@@ -17,3 +17,15 @@ X is greater than Y
 Y is greater than X
 {% endif %}
 [root@ansible-control-node playbooks]#
+#######################################################################################
+Total Memory: {{ ansible_memtotal_mb }}
+{% if ansible_memtotal_mb > 100 %}
+Memory is LARGE
+{% else %}
+Memory is SMALL
+{% endif %}
+#######################################################################################
+{% for host in groups['all'] %}
+{{ hostvars[host]['ansible_facts']['default_uov4']['address']}} {{ hostvars[host]['ansible_facts']['hostname'] }}
+{% endfor %}
+#######################################################################################
