@@ -82,6 +82,58 @@ Hello, {{ item.name }}.
       {% else %}
         value3
       {% endif %}
+# Or we can follow this approach
+- name: Set value using inline Jinja
+  set_fact:
+    my_var: "{{ 'Value for one' if my_input == 'one' else 'Value for two' if my_input == 'two' else 'Default value' }}"
+# Dynamic File Paths Based on Environment
+- name: Set config path based on environment
+  set_fact:
+    config_path: >-
+      {% if env == 'prod' %}
+        /etc/myapp/prod/config.yaml
+      {% elif env == 'staging' %}
+        /etc/myapp/staging/config.yaml
+      {% else %}
+        /etc/myapp/dev/config.yaml
+      {% endif %}
+# Service Port Mapping Based on Role or Application
+- name: Assign service port dynamically
+  set_fact:
+    service_port: >-
+      {% if app_name == 'web' %}
+        80
+      {% elif app_name == 'api' %}
+        8080
+      {% else %}
+        3000
+      {% endif %}
+#  Select Package List Based on OS Family
+- name: Set package list for installation
+  set_fact:
+    packages: >-
+      {% if ansible_os_family == 'Debian' %}
+        ['nginx', 'curl']
+      {% elif ansible_os_family == 'RedHat' %}
+        ['httpd', 'curl']
+      {% else %}
+        []
+      {% endif %}
+# Hostname Formatting Based on Index or Host Variables
+- name: Set formatted hostname
+  set_fact:
+    new_hostname: "{{ inventory_hostname | regex_replace('\\..*', '') | upper }}-NODE"
+# Conditional IP Selection (Public/Private based on flag)
+- name: Select IP based on use_private variable
+  set_fact:
+    target_ip: "{{ hostvars[inventory_hostname]['ansible_' + (use_private | ternary('eth1', 'eth0'))]['ipv4']['address'] }}"
+# Template Variable in File Name or Path
+- name: Copy environment specific config file
+  template:
+    src: "config-{{ env }}.j2"
+    dest: "/etc/myapp/config.yaml"
+# 
+
 --------------------------------------------------------------------------------------------------------------
 [root@ansible-control-node ansible-trainings]# cat config.j2
 # config.j2
@@ -105,3 +157,41 @@ server_name: dev.example.com
          dest: /tmp/jinja-config.txt
 [root@ansible-control-node ansible-trainings]#
 --------------------------------------------------------------------------------------------------------------
+2. Looping with Conditions
+- name: Process items with conditions
+  set_fact:
+    processed_items: >-
+      {% for item in items %}
+        {% if item.condition %}
+          {{ item.value }}
+        {% endif %}
+      {% endfor %}
+3. Conditional Package Installation
+- name: Install packages based on OS
+  package:
+    name: >-
+      {% if ansible_os_family == 'Debian' %}
+        apache2
+      {% elif ansible_os_family == 'RedHat' %}
+        httpd
+      {% endif %}
+    state: present
+4. Dynamic Inventory
+- name: Generate dynamic inventory
+  add_host:
+    name: "{{ item.name }}"
+    groups: >-
+      {% if item.role == 'web' %}
+        webservers
+      {% elif item.role == 'db' %}
+        dbservers
+      {% endif %}
+  loop: "{{ inventory_items }}"
+5. Conditional Task Execution
+- name: Conditional task execution
+  command: "{{ item.command }}"
+  when: item.condition
+  loop:
+    - { command: 'echo Hello', condition: true }
+    - { command: 'echo World', condition: false }
+
