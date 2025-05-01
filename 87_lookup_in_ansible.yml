@@ -15,3 +15,73 @@ Tips & Gotchas
 Lookups run on the control node, not the managed host.
 Always wrap them in {{ }} when using them in tasks or templates.
 Many plugins accept kwargs like delimiter=, length=, etc.
+########################################################################################################################
+---
+- name: Configure domain name
+  hosts: r1
+  gather_facts: false
+  tasks:
+  ####### file lookup ##############
+    # - name: File lookup example
+    #   ansible.builtin.debug:
+    #     msg:
+    #       # - "{{ lookup('file', 'ios_conf1.txt', errors='ignore') }}"                # To ignore the error message if File doesn't exist
+    #       # - "{{ lookup('file', 'ios_conf.txt', errors='warn') }}"                   # To get Warning message if File doesn't exist
+    #       # - "{{ lookup('file', 'ios_conf1.txt', errors='strict') }}"                # This ensures that an error is raised if the file cannot be found or read.
+    #       # - "{{ lookup('file', 'ios_conf.txt', errors='strict', wantlist=True) }}"  # To get the data in List format
+    #       # - "{{ lookup('file', 'ios_conf.txt', errors='strict') }}"                 # To get the data in normal string format
+    #       - "{{ lookup('file', 'ios_conf.txt', errors='strict', lstrip=True, rstrip=False) }}" # This removes any leading whitespace from each line of the file (Left side), By default the right side extra spaces will be removed. If you don't want that feature you can mention False parameter.
+
+  ####### template lookup ##########
+[# this is ospf conf #]
+router ospf {{ ospf_vars.process_id }}
+network {{ ospf_vars.net }} {{ ospf_vars.wildcard }} area {{ ospf_vars.area }}
+network [% net2 %] {{ ospf_vars.wildcard }} area {{ ospf_vars.area }}
+
+    # - name: Template lookup example
+    #   ansible.builtin.debug:
+    #     msg:
+    #       # - "{{ lookup('template', 'ospf_conf.j2') }}"
+    #       # - "{{ lookup('template', 'ospf_conf.j2') | upper }}"
+    #       - "{{ lookup('template', 'ospf_conf.j2',
+    #                                 comment_start_string='[#',
+    #                                 comment_end_string='#]',
+    #                                 template_vars={'net2': '192.168.101.0'},
+    #                                 variable_start_string='[%',
+    #                                 variable_end_string='%]',
+    #                                 ) }}"
+
+
+  ####### var lookup ###############
+    # - name: Vars lookup example
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "{{ lookup('vars', '{{ inventory_hostname}}_location')}}"
+
+  ####### env lookup ###############
+    # - name: Env lookup example
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "{{ lookup('env', 'HOME')}}"
+    #       - "{{ lookup('env', 'VIRTUAL_ENV')}}"
+    #       - "{{ lookup('env', 'VIRTUAL_ENV1')}}"
+    #       - "{{ lookup('env', 'VIRTUAL_ENV1', default='no_environment_set')}}"
+    #       - "{{ lookup('env', 'VIRTUAL_ENV1', default=undefined)}}"
+
+  ####### pipe lookup ###############
+    - name: pipe lookup example
+      ansible.builtin.debug:
+        msg:
+          - "{{ lookup('pipe', 'date')}}"
+          - "{{ lookup('pipe', 'date +%Y-%m-%d@%H:%M:%S')}}"
+          - "{{ lookup('pipe', 'pwd')}}"
+          # - "{{ lookup('pipe', 'pwd1', errors='ignore')}}"
+          # - "{{ lookup('pipe', 'pwd1', errors='warn')}}"
+          # - "{{ lookup('pipe', 'pwd1', errors='strict')}}"
+Output:
+ok: [localhost] => 
+  msg:
+  - Thu May  1 13:55:37 EDT 2025
+  - 2025-05-01@13:55:37
+  - /root/ansible-trainings
+  ####### pipe lookup ##############
