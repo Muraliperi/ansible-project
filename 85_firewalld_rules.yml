@@ -30,3 +30,23 @@
   service:
     name: firewalld
     state: reloaded
+- name: Add samba service to firewalld 
+  firewalld:
+    service: samba
+    zone: public
+    permanent: yes
+    state: enabled
+  notify: Reload firewalld      
+
+- name: Firewall rules for db
+  firewalld:
+    port: "{{ item }}"
+    zone: public
+    permanent: yes
+    state: enabled
+  with_items:
+    - 137/udp
+    - 138/udp
+    - 139/tcp
+    - 445/tcp
+  notify: Reload firewalld
