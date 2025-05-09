@@ -61,3 +61,13 @@
         name: "{{ selinux_boolean }}"
         state: "{{ selinux_value }}"
         persistent: true
+----------------------------------------------------------------
+    - name: Change SELinux file context for Samba share
+      community.general.sefcontext:
+        target: "/mnt/shared(/.*)?"
+        setype: samba_share_t
+        state: present
+
+    - name: Apply the SELinux file context changes
+      command: restorecon -Rv /mnt/shared
+      changed_when: true
