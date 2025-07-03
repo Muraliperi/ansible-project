@@ -27,7 +27,34 @@
          port: 22               # Check port 22 (SSH) to confirm the server is accessible.
       delegate_to: localhost    # Run the check from the localhost (Ansible control node).
       become: false
+- name: Restart server and wait for it to back Online
+  hosts: production
+  tasks:
+    - name: Execute a Script
+      shell: "sh /root/updatepatch"
+      async: 240
+      poll: 0
+      register: patch_result
+    - name: Wait for patch update to finish
+      async_status:
+        jid: "{{ patch_result.ansible_job_id }}"
+      register: job_result
+      retries: 5
+      delay: 10
+      until: job_result.finished
+   - name: Fetch Installed Patch version
+     shell: "tail -1 /.patchversion"
+     register: patch_ver_before_reboot.stdout
 
+   - Rebooting the server
+     reboot:
+       msg: "Rebooted initiated by Ansible"
+       pre_reboot_delay: 0
+       post_reboot_delay: 5
+       test_command: "uptime"
+   - name: Ensure the server is up and running
+     ping:    
+      
 - name: This will check async job status
   hosts: stage
   tasks:
